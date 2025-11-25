@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>All Products | Smart Loading</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body { background:#eef2f7; }
+    .product-card { border-radius:12px; height:100%; padding:15px; display:flex; flex-direction:column; }
+    .product-img { height:220px; object-fit:contain; background:#fff; border-radius:10px; }
+    .like-btn { cursor:pointer; font-size:22px; user-select:none; }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark bg-dark px-3 d-flex justify-content-between">
+  <a class="navbar-brand fw-bold">Smart Loading System</a>
+  <div class="d-flex gap-2">
+    <a href="/dashboard" class="btn btn-sm btn-light">Dashboard</a>
+    <a href="/logout" class="btn btn-sm btn-danger">Logout</a>
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+  <div class="text-center mb-4">
+    <h2 class="fw-bold">All Products</h2>
+    <p class="text-muted">Browse the full catalog</p>
+  </div>
+
+  <!-- LOOP CATEGORIES -->
+  <div th:each="entry : ${categoryMap}">
+    <h3 class="mt-4 fw-bold" th:text="${entry.key}"></h3>
+
+    <div class="row g-4">
+      <!-- LOOP PRODUCTS -->
+      <div class="col-md-3" th:each="p : ${entry.value}">
+        <div class="card shadow-sm product-card">
+
+          <img th:src="${p.imageUrl}" class="product-img">
+
+          <h6 class="mt-2" th:text="${p.productName}"></h6>
+
+          <small class="text-muted"
+                 th:text="${#strings.abbreviate(p.description, 80)}"></small>
+
+          <strong class="text-primary mt-auto" th:text="'RM ' + ${p.price}"></strong>
+
+          <!-- LIKE BUTTON & COUNTER -->
+          <div class="mt-2 d-flex align-items-center gap-2">
+
+            <span class="like-btn"
+                  th:attr="data-product-id=${p.productId}"
+                  th:classappend="${p.likedByUser} ? ' text-danger' : ' text-secondary'"
+                  th:text="${p.likedByUser} ? '❤' : '🤍'"
+                  onclick="toggleLike(this)">
+            </span>
+
+            <small th:id="'likes-' + ${p.productId}"
+                   th:text="${p.likes} + ' likes'">0 likes</small>
+          </div>
+
+          <!-- VIEW DETAILS -->
+          <button class="btn btn-dark btn-sm mt-2"
+                  th:attr="data-product-id=${p.productId}"
+                  onclick="recordUserClick(this)">
+            View Details
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+  // Record user click
+  function recordUserClick(btn) {
+      const productId = btn.getAttribute("data-product-id");
+
+      fetch("/api/behavior/click", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "productId=" + encodeURIComponent(productId)
+      });
+  }
+
+  // LIKE FEATURE
+  function toggleLike(el) {
+      const productId = el.getAttribute("data-product-id");
+
+      fetch("/api/likes/toggle", {   // FIXED ENDPOINT
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "productId=" + encodeURIComponent(productId)
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.error) {
+              alert("Please login to like items.");
+              return;
+          }
+
+          // Update icon & color
+          if (data.liked) {
+              el.innerText = "❤";
+              el.className = "like-btn text-danger";
+          } else {
+              el.innerText = "🤍";
+              el.className = "like-btn text-secondary";
+          }
+
+          // Update likes counter
+          const likeCount = document.getElementById("likes-" + productId);
+          likeCount.innerText = data.totalLikes + " likes";
+      })
+      .catch(err => console.error("Like error:", err));
+  }
+
+</script>
+
+</body>
+</html>

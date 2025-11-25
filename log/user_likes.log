@@ -1,0 +1,16 @@
+{
+  "logId" : "f53496bc-4d61-4e39-80b4-d587e8f9cebd",
+  "timestamp" : "2025-11-24T22:23:11.9880232+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "LIKE",
+  "event" : "product_like_toggle",
+  "productId" : "WC002"
+}
+{
+  "logId" : "229d0ada-f685-4939-8b60-a9713836dc77",
+  "timestamp" : "2025-11-24T22:23:12.9075861+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "UNLIKE",
+  "event" : "product_like_toggle",
+  "productId" : "WC002"
+}

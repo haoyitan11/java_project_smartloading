@@ -1,0 +1,16 @@
+{
+  "logId" : "8d63e06a-c775-4980-a60e-943c6f65a898",
+  "event" : "product_click",
+  "timestamp" : "2025-11-24T20:51:48.6804353+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "watches",
+  "productId" : "WC001"
+}
+{
+  "timestamp" : "Mon Nov 24 21:10:55 MYT 2025",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "watches",
+  "productId" : "WC001",
+  "event" : "product_click",
+  "logId" : "c6f2f872-065f-4807-9fe3-cb202ec23c27"
+}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Smart Loading</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body { background: #eef2f7; }
+        .product-card { border-radius: 12px; padding: 15px; height: 100%; display:flex; flex-direction:column; }
+        .product-img { height: 220px; object-fit: contain; background:white; border-radius:10px; }
+        .heart { cursor:pointer; font-size: 22px; user-select:none; transition:0.15s ease; }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dark bg-dark px-3 d-flex justify-content-between">
+    <a class="navbar-brand fw-bold">Smart Loading System</a>
+
+    <div class="d-flex gap-2">
+        <a href="/products" class="btn btn-sm btn-light">All Products</a>
+        <a href="/logout" class="btn btn-sm btn-danger">Logout</a>
+    </div>
+</nav>
+
+
+<!-- CONTENT -->
+<div class="container mt-4">
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Recommended For You</h2>
+        <p class="text-muted">
+            Based on your recent browsing —
+            <span th:text="${recommendedCategory}"></span>
+        </p>
+    </div>
+
+
+    <!-- CATEGORY GROUPS -->
+    <div th:each="entry : ${categoryProductMap}">
+        <h3 class="fw-bold mt-5" th:text="${entry.key}"></h3>
+
+        <div class="row g-4">
+
+            <div class="col-md-3"
+                 th:each="p : ${entry.value}">
+
+                <div class="card shadow-sm product-card">
+
+                    <img th:src="${p.imageUrl}" class="product-img">
+
+                    <h6 class="mt-2" th:text="${p.productName}"></h6>
+
+                    <small class="text-muted"
+                           th:text="${#strings.abbreviate(p.description, 80)}"></small>
+
+                    <strong class="text-primary mt-auto"
+                            th:text="'RM ' + ${p.price}"></strong>
+
+
+                    <!-- LIKE BUTTON & COUNTER -->
+                    <div class="d-flex align-items-center mt-2">
+
+                        <!-- Heart icon -->
+                        <span class="heart"
+                              th:attr="data-product-id=${p.productId}"
+                              th:text="${userLikes[p.productId]} ? '❤' : '🤍'"
+                              th:classappend="${userLikes[p.productId]} ? ' text-danger' : ' text-secondary'"
+                              onclick="toggleLike(this)">
+                        </span>
+
+                        <!-- Like count text -->
+                        <span class="ms-2"
+                              th:attr="id=${'likes-' + p.productId}"
+                              th:text="${likeText[p.productId]}">
+                        </span>
+                    </div>
+
+
+                    <!-- VIEW BUTTON -->
+                    <button class="btn btn-dark btn-sm mt-3"
+                            th:attr="data-product-id=${p.productId}"
+                            onclick="recordUserClick(this)">
+                        View Details
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- JS -->
+<script>
+
+    /* ===========================================================
+       RECORD PRODUCT CLICKS
+    =========================================================== */
+    function recordUserClick(btn) {
+        const productId = btn.getAttribute("data-product-id");
+
+        fetch("/api/behavior/click", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "productId=" + encodeURIComponent(productId)
+        });
+    }
+
+
+    /* ===========================================================
+       LIKE / UNLIKE FEATURE
+    =========================================================== */
+    function toggleLike(heart) {
+
+        const productId = heart.getAttribute("data-product-id");
+
+        fetch("/api/likes/toggle", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "productId=" + encodeURIComponent(productId)
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.error) {
+                alert("Please login first.");
+                return;
+            }
+
+            // --- ICON UPDATE ---
+            if (data.liked) {
+                heart.textContent = "❤";
+                heart.classList.add("text-danger");
+                heart.classList.remove("text-secondary");
+            } else {
+                heart.textContent = "🤍";
+                heart.classList.add("text-secondary");
+                heart.classList.remove("text-danger");
+            }
+
+            // --- LIKE COUNT UPDATE ---
+            const cnt = document.getElementById("likes-" + productId);
+            cnt.textContent = data.totalLikes+ " likes";
+        })
+        .catch(err => console.error("LIKE ERROR:", err));
+    }
+
+</script>
+
+</body>
+</html>
