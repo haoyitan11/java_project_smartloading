@@ -14,3 +14,27 @@
   "event" : "product_like_toggle",
   "productId" : "WC002"
 }
+{
+  "logId" : "c3e7cda4-3a11-4bb9-9f96-4723cb82511a",
+  "timestamp" : "2025-11-26T21:27:18.0786797+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "LIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP002"
+}
+{
+  "logId" : "9681fab6-ff64-4a02-8845-e0df5cdbc51b",
+  "timestamp" : "2025-11-26T21:27:18.5893473+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "LIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP003"
+}
+{
+  "logId" : "e42a19d6-ec0e-490b-9a42-9845fbeca09e",
+  "timestamp" : "2025-11-26T21:27:19.6290583+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "LIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP001"
+}

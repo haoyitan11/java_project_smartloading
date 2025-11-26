@@ -26,9 +26,8 @@ public class DecisionTreeController {
         model.addAttribute("initialProducts", result.getInitialProducts());
         model.addAttribute("stage1Liked", result.getStage1Liked());
         model.addAttribute("stage2Clicks", result.getStage2Clicks());
-        model.addAttribute("stage3GlobalLiked", result.getStage3GlobalLiked());
-        model.addAttribute("stage4GlobalClicks", result.getStage4GlobalClicks());
-        model.addAttribute("finalProducts", result.getFinalProducts());
+        model.addAttribute("stage3Global", result.getStage3Global());
+        model.addAttribute("finalProducts", result.getFinalProducts15());
         model.addAttribute("steps", result.getSteps());
 
         return "decision-tree";

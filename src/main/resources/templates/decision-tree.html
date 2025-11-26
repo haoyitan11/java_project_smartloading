@@ -9,54 +9,110 @@
     <style>
         body { background:#eef2f7; }
 
-        table.tree {
-            margin: 35px auto;
-            width: 900px;
-            text-align: center;
+        /* ===== Tree Panel ===== */
+        .tree-panel {
+            background: #f7f9fc;
+            border: 1px solid #dde3ea;
+            border-radius: 16px;
+            padding: 34px 22px;
+            margin: 18px auto 42px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            max-width: 980px;
         }
 
         .node {
-            padding: 14px 20px;
+            padding: 16px 24px;
             background: #ffffff;
-            border-radius: 12px;
-            font-weight: 600;
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            border-radius: 14px;
+            font-weight: 700;
+            border: 1px solid #cfd6dd;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+            display: inline-block;
+            min-width: 380px;
+            margin: 8px 0;
+            line-height: 1.25;
+            position: relative;
         }
 
-        .node-final {
-            background: #e1ecff;
-            border: 2px solid #0d6efd;
+        .node-title {
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .node-desc {
+            font-size: 0.92rem;
+            color: #6c757d;
+            margin-top: 7px;
+            font-weight: 500;
+        }
+
+        .cap-badge {
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid #ddd;
+            background: #f1f5f9;
+            color: #111827;
+        }
+
+        @media (max-width: 576px) {
+            .node { min-width: 250px; font-size: 0.95rem; padding: 14px 18px;}
         }
 
         .connector {
-            height: 35px;
-            width: 2px;
-            margin: auto;
-            background: #666;
+            height: 40px;
+            width: 3px;
+            margin: 10px auto;
+            background: #6b7280;
+            border-radius: 4px;
         }
 
+        .highlight {
+            border: 2px solid #0d6efd !important;
+            background: #e8f0ff !important;
+        }
+
+        .leaf {
+            background:#fff7e6;
+            border: 1px solid #f0ad4e;
+        }
+
+        /* ===== Products ===== */
         .product-box {
-            border: 1px solid #ccc;
+            border: 1px solid #ccd3da;
             background: #fff;
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin: 8px;
-            width: 220px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            height: 100%;
         }
 
         .product-img {
             height: 110px;
             width: 100%;
             object-fit: contain;
-            border-radius: 5px;
+            border-radius: 6px;
         }
 
         .section-title {
-            margin-top: 35px;
+            margin-top: 34px;
             margin-bottom: 10px;
-            font-weight: 700;
+            font-weight: 800;
+        }
+
+        .section-divider {
+            margin-top: 26px;
+            margin-bottom: 6px;
+            border-top: 1px dashed #c7cdd4;
+        }
+
+        .tiny-muted {
+            font-size: 0.95rem;
+            color: #6c757d;
         }
     </style>
 </head>
@@ -71,116 +127,178 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="container py-4">
 
-    <h2 class="fw-bold mt-4 text-center">Decision Tree Visualization</h2>
-    <p class="text-muted text-center">Full decision pipeline from 15 products → Top 5 products</p>
+    <h2 class="fw-bold text-center">Decision Tree (Sequential Priority)</h2>
+    <p class="text-muted text-center">
+        Load all products → apply rules (8 → 4 → 3) → final 15 products
+    </p>
 
-    <!-- DECISION TREE TABLE -->
-    <table class="tree">
+    <!-- ===================== -->
+    <!--  SEQUENTIAL TREE FLOW -->
+    <!-- ===================== -->
+    <div class="tree-panel text-center">
 
-        <!-- ROOT -->
-        <tr><td colspan="4" class="node">Start → 15 Candidate Products Loaded</td></tr>
-        <tr><td colspan="4"><div class="connector"></div></td></tr>
+        <!-- Rule 1 -->
+        <div class="node leaf"
+             th:classappend="${steps.contains('Rule 1: Fill up to 8 from Personal Likes')} ? 'highlight' : ''">
+            <div class="node-title">
+                Rule 1 — Personal Likes
+                <span class="cap-badge">MAX 8</span>
+            </div>
+            <div class="node-desc">
+                Add products from the user’s most-liked categories.
+                Stop when 8 products are collected or no more matches.
+            </div>
+        </div>
 
-        <!-- Priority 1 -->
-        <tr><td colspan="4" class="node">Priority 1: Filter by Personal Most-Liked Categories</td></tr>
-        <tr><td colspan="4"><div class="connector"></div></td></tr>
+        <div class="connector"></div>
 
-        <!-- Priority 2 -->
-        <tr><td colspan="4" class="node">Priority 2: Filter by Personal Most-Clicked Categories</td></tr>
-        <tr><td colspan="4"><div class="connector"></div></td></tr>
+        <!-- Rule 2 -->
+        <div class="node leaf"
+             th:classappend="${steps.contains('Rule 2: Fill up to 4 from Personal Clicks')} ? 'highlight' : ''">
+            <div class="node-title">
+                Rule 2 — Personal Clicks
+                <span class="cap-badge">MAX 4</span>
+            </div>
+            <div class="node-desc">
+                If still less than 15 total → add remaining products
+                from user’s most-clicked categories, up to 4.
+            </div>
+        </div>
 
-        <!-- Priority 3 -->
-        <tr><td colspan="4" class="node">Priority 3: Filter by Global Most-Liked Categories</td></tr>
-        <tr><td colspan="4"><div class="connector"></div></td></tr>
+        <div class="connector"></div>
 
-        <!-- Priority 4 -->
-        <tr><td colspan="4" class="node">Priority 4: Filter by Global Most-Clicked Categories</td></tr>
-        <tr><td colspan="4"><div class="connector"></td></tr>
+        <!-- Rule 3 -->
+        <div class="node leaf"
+             th:classappend="${steps.contains('Rule 3: Fill up to 3 from Global Likes+Clicks')} ? 'highlight' : ''">
+            <div class="node-title">
+                Rule 3 — Global Fallback
+                <span class="cap-badge">MAX 3</span>
+            </div>
+            <div class="node-desc">
+                If still less than 15 total → fill remaining slots
+                using global most-liked + most-clicked categories, up to 3.
+            </div>
+        </div>
 
-        <!-- FINAL -->
-        <tr>
-            <td colspan="4" class="node node-final">
-                Final 5 Products Selected
-            </td>
-        </tr>
+        <div class="connector"></div>
 
-    </table>
-
-    <!-- ======================= -->
-    <!--   STAGE 0 (Initial)     -->
-    <!-- ======================= -->
-    <h4 class="section-title">Stage 0 — Initial 15 Candidate Products</h4>
-    <div class="d-flex flex-wrap justify-content-center" th:each="p : ${initialProducts}">
-        <div class="product-box">
-            <img th:src="${p.imageUrl}" class="product-img"/>
-            <div class="fw-bold mt-2" th:text="${p.productName}"></div>
-            <div class="text-muted" th:text="${p.category}"></div>
-            <div class="mt-1 fw-bold text-primary" th:text="'RM ' + ${p.price}"></div>
+        <!-- Final -->
+        <div class="node highlight">
+            Final Output: 15 Recommended Products
         </div>
     </div>
 
-    <!-- ======================= -->
-    <!--   STAGE 1 (Likes)       -->
-    <!-- ======================= -->
-    <h4 class="section-title">Stage 1 — After Filtering by Personal Most-Liked Categories</h4>
-    <p th:if="${#lists.isEmpty(stage1Liked)}" class="text-danger text-center">No products matched your liked categories → pass to next rule</p>
 
-    <div class="d-flex flex-wrap justify-content-center" th:each="p : ${stage1Liked}">
-        <div class="product-box">
-            <img th:src="${p.imageUrl}" class="product-img"/>
-            <div class="fw-bold mt-2" th:text="${p.productName}"></div>
-            <div class="text-muted" th:text="${p.category}"></div>
+    <!-- ======================= -->
+    <!--   PRODUCTS DISPLAY      -->
+    <!--   (MAX 5 PER ROW)       -->
+    <!-- ======================= -->
+
+    <!-- Stage 0 -->
+    <h4 class="section-title">Stage 0 — All Products Loaded</h4>
+    <p class="tiny-muted">Full product list from database (≈45).</p>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+        <div class="col" th:each="p : ${initialProducts}">
+            <div class="product-box">
+                <img th:src="${p.imageUrl}" class="product-img"/>
+                <div class="fw-bold mt-2" th:text="${p.productName}"></div>
+                <div class="text-muted" th:text="${p.category}"></div>
+                <div class="mt-1 fw-bold text-primary" th:text="'RM ' + ${p.price}"></div>
+            </div>
         </div>
     </div>
 
-    <!-- ======================= -->
-    <!--   STAGE 2 (Clicks)      -->
-    <!-- ======================= -->
-    <h4 class="section-title">Stage 2 — After Filtering by Personal Most-Clicked Categories</h4>
-    <div class="d-flex flex-wrap justify-content-center" th:each="p : ${stage2Clicks}">
-        <div class="product-box">
-            <img th:src="${p.imageUrl}" class="product-img"/>
-            <div class="fw-bold mt-2" th:text="${p.productName}"></div>
-            <div class="text-muted" th:text="${p.category}"></div>
+    <div class="section-divider"></div>
+
+    <!-- Stage 1 -->
+    <h4 class="section-title">
+        Stage 1 — Products Added by Personal Likes
+        <span class="tiny-muted">(max 8)</span>
+    </h4>
+
+    <p th:if="${#lists.isEmpty(stage1Liked)}"
+       class="text-danger text-center">
+        No products added from personal likes → continue to clicks
+    </p>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+        <div class="col" th:each="p : ${stage1Liked}">
+            <div class="product-box">
+                <img th:src="${p.imageUrl}" class="product-img"/>
+                <div class="fw-bold mt-2" th:text="${p.productName}"></div>
+                <div class="text-muted" th:text="${p.category}"></div>
+            </div>
         </div>
     </div>
 
-    <!-- ======================= -->
-    <!--   STAGE 3 (Global Likes)-->
-    <!-- ======================= -->
-    <h4 class="section-title">Stage 3 — After Filtering by Global Most-Liked Categories</h4>
-    <div class="d-flex flex-wrap justify-content-center" th:each="p : ${stage3GlobalLiked}">
-        <div class="product-box">
-            <img th:src="${p.imageUrl}" class="product-img"/>
-            <div class="fw-bold mt-2" th:text="${p.productName}"></div>
-            <div class="text-muted" th:text="${p.category}"></div>
+    <div class="section-divider"></div>
+
+    <!-- Stage 2 -->
+    <h4 class="section-title">
+        Stage 2 — Products Added by Personal Clicks
+        <span class="tiny-muted">(max 4)</span>
+    </h4>
+
+    <p th:if="${#lists.isEmpty(stage2Clicks)}"
+       class="text-danger text-center">
+        No products added from personal clicks → continue to global fallback
+    </p>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+        <div class="col" th:each="p : ${stage2Clicks}">
+            <div class="product-box">
+                <img th:src="${p.imageUrl}" class="product-img"/>
+                <div class="fw-bold mt-2" th:text="${p.productName}"></div>
+                <div class="text-muted" th:text="${p.category}"></div>
+            </div>
         </div>
     </div>
 
-    <!-- ========================== -->
-    <!--   STAGE 4 (Global Clicks)  -->
-    <!-- ========================== -->
-    <h4 class="section-title">Stage 4 — After Filtering by Global Most-Clicked Categories</h4>
-    <div class="d-flex flex-wrap justify-content-center" th:each="p : ${stage4GlobalClicks}">
-        <div class="product-box">
-            <img th:src="${p.imageUrl}" class="product-img"/>
-            <div class="fw-bold mt-2" th:text="${p.productName}"></div>
-            <div class="text-muted" th:text="${p.category}"></div>
+    <div class="section-divider"></div>
+
+    <!-- Stage 3 -->
+    <h4 class="section-title">
+        Stage 3 — Products Added by Global Fallback
+        <span class="tiny-muted">(max 3)</span>
+    </h4>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+        <div class="col" th:each="p : ${stage3Global}">
+            <div class="product-box">
+                <img th:src="${p.imageUrl}" class="product-img"/>
+                <div class="fw-bold mt-2" th:text="${p.productName}"></div>
+                <div class="text-muted" th:text="${p.category}"></div>
+            </div>
         </div>
     </div>
 
-    <!-- ======================= -->
-    <!--   FINAL STAGE           -->
-    <!-- ======================= -->
-    <h3 class="section-title text-center">Final Top 5 Products</h3>
-    <div class="d-flex flex-wrap justify-content-center" th:each="p : ${finalProducts}">
-        <div class="product-box">
-            <img th:src="${p.imageUrl}" class="product-img"/>
-            <div class="fw-bold mt-2" th:text="${p.productName}"></div>
-            <div class="text-muted" th:text="${p.category}"></div>
+    <div class="section-divider"></div>
+
+    <!-- Final -->
+    <h3 class="section-title text-center">Final 15 Recommended Products</h3>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3 justify-content-center">
+        <div class="col" th:each="p : ${finalProducts}">
+            <div class="product-box">
+                <img th:src="${p.imageUrl}" class="product-img"/>
+                <div class="fw-bold mt-2" th:text="${p.productName}"></div>
+                <div class="text-muted" th:text="${p.category}"></div>
+            </div>
         </div>
+    </div>
+
+    <!-- Debug steps -->
+    <div class="mt-4">
+        <h6 class="fw-bold">Decision Steps (for reference)</h6>
+        <ul class="list-group">
+            <li class="list-group-item"
+                th:each="s : ${steps}"
+                th:text="${s}">
+            </li>
+        </ul>
     </div>
 
 </div>

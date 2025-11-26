@@ -1,52 +1,48 @@
 package com.assignment.smartloading.dto;
 
 import com.assignment.smartloading.model.Product;
-
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class DecisionTreeResult {
 
-    private List<Product> initialProducts;
-    private List<Product> stage1Liked;
-    private List<Product> stage2Clicks;
-    private List<Product> stage3GlobalLiked;
-    private List<Product> stage4GlobalClicks;
-    private List<Product> finalProducts;
-    private List<String> steps;
+    private final List<Product> initialProducts; // 45 all
+    private final List<Product> stage1Liked;     // <= 8
+    private final List<Product> stage2Clicks;    // <= 4
+    private final List<Product> stage3Global;    // <= 3
+    private final List<Product> finalProducts15; // 15
+
+    private final Map<String, Long> categoryCount;
+    private final List<String> top3Categories;
+    private final List<String> steps;
 
     public DecisionTreeResult(
             List<Product> initial,
             List<Product> s1,
             List<Product> s2,
             List<Product> s3,
-            List<Product> s4,
-            List<Product> finalTop5,
+            List<Product> final15,
+            Map<String, Long> categoryCount,
+            List<String> top3Categories,
             List<String> steps
     ) {
         this.initialProducts = initial;
         this.stage1Liked = s1;
         this.stage2Clicks = s2;
-        this.stage3GlobalLiked = s3;
-        this.stage4GlobalClicks = s4;
-        this.finalProducts = finalTop5;
+        this.stage3Global = s3;
+        this.finalProducts15 = final15;
+        this.categoryCount = categoryCount;
+        this.top3Categories = top3Categories;
         this.steps = steps;
     }
 
-    // GETTERS
     public List<Product> getInitialProducts() { return initialProducts; }
     public List<Product> getStage1Liked() { return stage1Liked; }
     public List<Product> getStage2Clicks() { return stage2Clicks; }
-    public List<Product> getStage3GlobalLiked() { return stage3GlobalLiked; }
-    public List<Product> getStage4GlobalClicks() { return stage4GlobalClicks; }
-    public List<Product> getFinalProducts() { return finalProducts; }
-    public List<String> getSteps() { return steps; }
+    public List<Product> getStage3Global() { return stage3Global; }
 
-    // Convert final products → categories
-    public List<String> getFinalCategories() {
-        return finalProducts.stream()
-                .map(Product::getCategory)
-                .distinct()
-                .collect(Collectors.toList());
-    }
+    public List<Product> getFinalProducts15() { return finalProducts15; }
+    public Map<String, Long> getCategoryCount() { return categoryCount; }
+    public List<String> getTop3Categories() { return top3Categories; }
+    public List<String> getSteps() { return steps; }
 }

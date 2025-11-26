@@ -1,5 +1,6 @@
 package com.assignment.smartloading.service;
 
+import com.assignment.smartloading.decision.*;
 import com.assignment.smartloading.dto.DecisionTreeResult;
 import com.assignment.smartloading.model.Product;
 import com.assignment.smartloading.repository.ProductLikeRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UnifiedRecommendationService {
@@ -17,60 +19,54 @@ public class UnifiedRecommendationService {
     @Autowired private ProductLikeRepository likeRepo;
     @Autowired private UserBehaviorRepository behaviorRepo;
 
-    private List<Product> filter(List<Product> source, List<String> categories) {
-        if (categories == null || categories.isEmpty()) return new ArrayList<>();
-        List<Product> out = new ArrayList<>();
-        for (Product p : source) {
-            if (categories.contains(p.getCategory()))
-                out.add(p);
-        }
-        return out;
-    }
-
-    private List<Product> fallback(List<Product> list, List<Product> original) {
-        return (list == null || list.isEmpty()) ? new ArrayList<>(original) : list;
-    }
+    private final DecisionTreeEngine engine = new DecisionTreeEngine();
+    private final DecisionNode tree = DecisionTreeBuilder.buildTree(engine);
 
     public DecisionTreeResult runDecisionTree(String userId) {
 
-        List<String> steps = new ArrayList<>();
+        RecommendationContext ctx = new RecommendationContext(userId);
 
-        // 1) Load 15 products
-        List<Product> initial = productRepo.findTop15();
-        steps.add("Loaded initial 15 products.");
+        // ✅ Stage 0: Load ALL products (45)
+        ctx.allProducts = productRepo.findAll();
 
-        // 2) Personal Likes
-        List<String> likedCats = likeRepo.findUserMostLikedCategories(userId);
-        List<Product> stage1 = filter(initial, likedCats);
-        steps.add("Filtered by personal likes → " + stage1.size());
+        // ✅ User liked categories (sorted by most likes)
+        ctx.likedCategories = likeRepo.findUserMostLikedCategories(userId);
 
-        // 3) Personal Clicks
-        List<String> clickCats = behaviorRepo.findUserMostClickedCategories(userId);
-        List<Product> stage2 = filter(fallback(stage1, initial), clickCats);
-        steps.add("Filtered by personal clicks → " + stage2.size());
+        // ✅ User clicked categories (sorted by most clicks)
+        ctx.clickedCategories = behaviorRepo.findUserMostClickedCategories(userId);
 
-        // 4) Global Likes
+        // ✅ Global categories (liked + clicked)
         List<String> globalLiked = likeRepo.findGlobalTopLikedCategories();
-        List<Product> stage3 = filter(fallback(stage2, initial), globalLiked);
-        steps.add("Filtered by global likes → " + stage3.size());
-
-        // 5) Global Clicks
         List<String> globalClicked = behaviorRepo.findGlobalTopClickedCategories();
-        List<Product> stage4 = filter(fallback(stage3, initial), globalClicked);
-        steps.add("Filtered by global clicks → " + stage4.size());
 
-        // 6) Final Top 5
-        List<Product> finalProducts = stage4.stream().limit(5).toList();
-        steps.add("Selected final top 5 products.");
+        ctx.globalCategories = new ArrayList<>();
+        ctx.globalCategories.addAll(globalLiked);
+        ctx.globalCategories.addAll(globalClicked);
+
+        // ✅ Run sequential tree (8 + 4 + 3 caps)
+        tree.evaluate(ctx);
+
+        // ✅ Category distribution inside FINAL 15
+        Map<String, Long> categoryCount =
+                ctx.final15Products.stream()
+                        .collect(Collectors.groupingBy(Product::getCategory, Collectors.counting()));
+
+        // ✅ Top 3 categories in priority order (by where they were filled)
+        LinkedHashSet<String> top3 = new LinkedHashSet<>();
+        ctx.stage1LikesAdded.forEach(p -> top3.add(p.getCategory()));
+        ctx.stage2ClicksAdded.forEach(p -> top3.add(p.getCategory()));
+        ctx.stage3GlobalAdded.forEach(p -> top3.add(p.getCategory()));
+        List<String> top3Categories = top3.stream().limit(3).toList();
 
         return new DecisionTreeResult(
-                initial,
-                stage1,
-                stage2,
-                stage3,
-                stage4,
-                finalProducts,
-                steps
+                ctx.allProducts,          // initial 45
+                ctx.stage1LikesAdded,     // stage1 (max 8)
+                ctx.stage2ClicksAdded,    // stage2 (max 4)
+                ctx.stage3GlobalAdded,    // stage3 (max 3)
+                ctx.final15Products,      // final 15
+                categoryCount,
+                top3Categories,
+                ctx.steps
         );
     }
 }

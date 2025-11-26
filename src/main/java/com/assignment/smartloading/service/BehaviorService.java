@@ -6,16 +6,14 @@ import com.assignment.smartloading.repository.UserBehaviorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class BehaviorService {
 
-    @Autowired
-    private UserBehaviorRepository repo;
-
-    @Autowired
-    private JsonLoggerService logger;
+    @Autowired private UserBehaviorRepository repo;
+    @Autowired private JsonLoggerService logger;
 
     public void addClick(String userId, String productId, String category) {
 

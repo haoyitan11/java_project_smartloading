@@ -14,3 +14,163 @@
   "event" : "product_click",
   "logId" : "c6f2f872-065f-4807-9fe3-cb202ec23c27"
 }
+{
+  "logId" : "952bc860-e548-463c-9650-9d958d1c2ef0",
+  "timestamp" : "2025-11-26T21:27:20.0143929+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP001"
+}
+{
+  "logId" : "b004b6c7-3261-4d4d-b35f-3e30d561191b",
+  "timestamp" : "2025-11-26T21:27:21.2969966+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "8c3e1533-2cc9-4799-a684-6c3e1bd9331b",
+  "timestamp" : "2025-11-26T21:27:21.7860665+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP003"
+}
+{
+  "logId" : "a50b88e2-3909-4a88-a9db-0322f96419bd",
+  "timestamp" : "2025-11-26T21:27:22.705848+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "fd93fc1d-0b57-41a2-a11e-f10f95923d28",
+  "timestamp" : "2025-11-26T21:27:22.8079999+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "b574b989-ec6b-4fca-8dac-e128099ca48c",
+  "timestamp" : "2025-11-26T21:27:22.9756589+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "67469bb3-3f69-476f-acc6-dd167beca9fb",
+  "timestamp" : "2025-11-26T21:27:23.1200809+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "ddc3586b-dcf9-476a-b1ff-45582c51fd19",
+  "timestamp" : "2025-11-26T21:27:23.2676392+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "81131b5f-7fc6-4337-afa3-3836d8ec31d1",
+  "timestamp" : "2025-11-26T21:27:23.4015823+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "58c2f1b1-3fbe-4f01-bf5b-6c827a31ae38",
+  "timestamp" : "2025-11-26T21:27:23.5521883+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "a635dbff-99b4-4e85-9bba-8cd74bd5441b",
+  "timestamp" : "2025-11-26T21:27:23.6965755+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "21600ec3-def4-4a57-865e-2337cece4c9d",
+  "timestamp" : "2025-11-26T21:27:23.8330424+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "cccd9dec-2246-4a54-b7a3-4e4e41beca73",
+  "timestamp" : "2025-11-26T21:27:23.9870193+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "22e2a5db-0cbd-41b5-b910-268d3b81ebdc",
+  "timestamp" : "2025-11-26T21:27:24.1492187+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "ae9204bc-1260-4299-802f-bb91c0cba3f1",
+  "timestamp" : "2025-11-26T21:27:24.2903467+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "f2825680-57fd-419a-ae52-531d22b864f5",
+  "timestamp" : "2025-11-26T21:27:24.4419584+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "f7fda5c3-63c9-4817-ae5d-2527484b3fef",
+  "timestamp" : "2025-11-26T21:27:24.5865858+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "835dcb4e-a629-479a-ad88-47e984418a67",
+  "timestamp" : "2025-11-26T21:27:24.7398529+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "headphones",
+  "event" : "product_click",
+  "productId" : "HP002"
+}
+{
+  "logId" : "326f514d-54cb-43da-b35d-a9ef7506c23f",
+  "timestamp" : "2025-11-26T22:04:21.0362729+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "shoes",
+  "event" : "product_click",
+  "productId" : "SH003"
+}
+{
+  "logId" : "9aec431f-c74a-4217-a4cc-d534dd88bdd2",
+  "timestamp" : "2025-11-26T22:04:34.8042269+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "shoes",
+  "event" : "product_click",
+  "productId" : "SH003"
+}

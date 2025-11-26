@@ -1,47 +1,29 @@
 package com.assignment.smartloading.decision;
 
-import java.util.List;
-
 public class DecisionTreeBuilder {
 
-    public static DecisionTreeNode buildTree() {
+    public static DecisionNode buildTree(DecisionTreeEngine engine) {
 
-        // Leaf A — User Likes
-        DecisionTreeNode likedLeaf = new DecisionTreeNode("Liked Leaf", null)
-                .outcome(new DecisionOutcome(
-                        DecisionOutcomeType.LIKES,
-                        List.of(),
-                        "Using liked categories"
-                ));
+        DecisionNode likesNode = new DecisionNode(
+                "Rule 1: Fill up to 8 from Personal Likes",
+                ctx -> ctx.likedCategories != null && !ctx.likedCategories.isEmpty(),
+                engine::applyLikes
+        );
 
-        // Leaf B — User Click Behavior
-        DecisionTreeNode clickLeaf = new DecisionTreeNode("Click Leaf", null)
-                .outcome(new DecisionOutcome(
-                        DecisionOutcomeType.CLICKS,
-                        List.of(),
-                        "Using click-based behavior"
-                ));
+        DecisionNode clicksNode = new DecisionNode(
+                "Rule 2: Fill up to 4 from Personal Clicks",
+                ctx -> ctx.clickedCategories != null && !ctx.clickedCategories.isEmpty(),
+                engine::applyClicks
+        );
 
-        // Leaf C — Global Categories
-        DecisionTreeNode globalLeaf = new DecisionTreeNode("Global Leaf", null)
-                .outcome(new DecisionOutcome(
-                        DecisionOutcomeType.GLOBAL,
-                        List.of("popular","clothing","shoes","bags","headphones"),
-                        "Using global fallback"
-                ));
+        DecisionNode globalNode = new DecisionNode(
+                "Rule 3: Fill up to 3 from Global Likes+Clicks",
+                ctx -> true,
+                engine::applyGlobal
+        );
 
-        // Node: has behavior?
-        DecisionTreeNode nodeBehavior =
-                new DecisionTreeNode("Has Click Behavior?", DecisionContext::hasBehavior)
-                        .trueNode(clickLeaf)
-                        .falseNode(globalLeaf);
+        likesNode.next(clicksNode).next(globalNode);
 
-        // Node: has likes?
-        DecisionTreeNode nodeLikes =
-                new DecisionTreeNode("Has Liked Categories?", DecisionContext::hasLikes)
-                        .trueNode(likedLeaf)
-                        .falseNode(nodeBehavior);
-
-        return nodeLikes;
+        return likesNode;
     }
 }
