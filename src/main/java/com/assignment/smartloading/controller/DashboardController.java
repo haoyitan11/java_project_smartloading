@@ -1,9 +1,10 @@
 package com.assignment.smartloading.controller;
 
+import com.assignment.smartloading.dto.DecisionTreeResult;
 import com.assignment.smartloading.model.Product;
-import com.assignment.smartloading.service.BehaviorService;
 import com.assignment.smartloading.service.LikeService;
 import com.assignment.smartloading.service.ProductService;
+import com.assignment.smartloading.service.UnifiedRecommendationService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,14 +16,9 @@ import java.util.*;
 @Controller
 public class DashboardController {
 
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private LikeService likeService;
-
-    @Autowired
-    private BehaviorService behaviorService;
+    @Autowired private ProductService productService;
+    @Autowired private LikeService likeService;
+    @Autowired private UnifiedRecommendationService recommendationService;
 
     @GetMapping("/dashboard")
     public String showDashboard(Model model, HttpSession session) {
@@ -30,53 +26,44 @@ public class DashboardController {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) return "redirect:/login";
 
-        /* ================================
-           RECOMMENDED CATEGORY LABEL
-        ================================ */
-        String recommended = behaviorService.getMostViewedCategory(userId);
+        // Run Unified Decision Pipeline
+        DecisionTreeResult result = recommendationService.runDecisionTree(userId);
+
+        // Final Top 5 Products
+        List<Product> finalProducts = result.getFinalProducts();
+        model.addAttribute("finalProducts", finalProducts);
+
+        // Compute final categories from final products
+        List<String> finalCategories = finalProducts.stream()
+                .map(Product::getCategory)
+                .distinct()
+                .toList();
+
+        model.addAttribute("finalCategories", finalCategories);
+
+        // UI Badge Recommendation
         model.addAttribute("recommendedCategory",
-                recommended != null ? recommended : "popular");
+                finalCategories.isEmpty() ? "None" : finalCategories.get(0));
 
-        /* ================================
-           LOAD TOP 5 CATEGORIES
-        ================================ */
-        List<String> categories = productService.getAllCategories();
-        if (categories == null) categories = new ArrayList<>();
+        // Steps for Debugging/Explanation
+        model.addAttribute("steps", result.getSteps());
 
-        Map<String, List<Product>> categoryProductMap = new LinkedHashMap<>();
-        Map<String, Boolean> userLikes = new HashMap<>();
+        // Like/Unlike Status
+        Map<String, Boolean> likedByUser = new HashMap<>();
         Map<String, String> likeText = new HashMap<>();
 
-        categories.stream()
-                .filter(Objects::nonNull)
-                .limit(5)
-                .forEach(cat -> {
+        for (Product p : finalProducts) {
+            boolean liked = likeService.isLiked(userId, p.getProductId());
+            long count = likeService.getLikes(p.getProductId());
 
-                    List<Product> products =
-                            Optional.ofNullable(productService.getProductsByCategory(cat))
-                                    .orElse(Collections.emptyList());
+            likedByUser.put(p.getProductId(), liked);
+            likeText.put(
+                    p.getProductId(),
+                    (count == 1 ? "1 like" : count + " likes")
+            );
+        }
 
-                    categoryProductMap.put(cat, products);
-
-                    for (Product p : products) {
-
-                        String pid = p.getProductId();
-
-                        boolean liked = likeService.isLiked(userId, pid);
-                        long count = likeService.getLikes(pid);
-
-                        userLikes.put(pid, liked);
-
-                        String txt = (count == 0)
-                                ? "0 likes"
-                                : (count == 1 ? "1 like" : count + " likes");
-
-                        likeText.put(pid, txt);
-                    }
-                });
-
-        model.addAttribute("categoryProductMap", categoryProductMap);
-        model.addAttribute("userLikes", userLikes);
+        model.addAttribute("userLikes", likedByUser);
         model.addAttribute("likeText", likeText);
 
         return "dashboard";

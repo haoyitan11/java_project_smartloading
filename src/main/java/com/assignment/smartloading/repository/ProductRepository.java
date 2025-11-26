@@ -10,10 +10,37 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
+    /**
+     * Load the top 15 products for recommendation stage 0.
+     */
+    @Query(value = "SELECT * FROM products ORDER BY product_id LIMIT 15", nativeQuery = true)
+    List<Product> findTop15();
+
+    /**
+     * Find a single product by productId (matches ProductService.getProductById).
+     */
+    Product findByProductId(String productId);
+
+    /**
+     * Load products by category.
+     */
     List<Product> findByCategory(String category);
 
-    @Query("SELECT DISTINCT p.category FROM Product p")
+    /**
+     * Load multiple categories at once.
+     */
+    List<Product> findByCategoryIn(List<String> categories);
+
+    /**
+     * For analytics: get all distinct categories.
+     */
+    @Query(value = "SELECT DISTINCT category FROM products", nativeQuery = true)
     List<String> findDistinctCategories();
 
-    Product findByProductId(String productId);
+    /**
+     * Search function (optional).
+     */
+    @Query(value = "SELECT * FROM products WHERE LOWER(product_name) LIKE LOWER(CONCAT('%', :keyword, '%'))",
+            nativeQuery = true)
+    List<Product> searchByName(String keyword);
 }

@@ -17,34 +17,22 @@ public class BehaviorService {
     @Autowired
     private JsonLoggerService logger;
 
-    /* ======================================================
-       RECORD USER CLICK + UPDATE BEHAVIOR TABLE
-    ====================================================== */
     public void addClick(String userId, String productId, String category) {
 
         logger.logClick(userId, productId, category);
 
-        UserBehavior b = repo.findByUserIdAndCategory(userId, category);
+        UserBehavior existing = repo.findByUserIdAndCategory(userId, category);
 
-        if (b == null) {
+        if (existing == null) {
             repo.save(new UserBehavior(userId, category, 1));
         } else {
-            b.setClicks(b.getClicks() + 1);
-            b.setLastUpdated(new Date());
-            repo.save(b);
+            existing.setClicks(existing.getClicks() + 1);
+            existing.setLastUpdated(new Date());
+            repo.save(existing);
         }
     }
 
-    /* ======================================================
-       DECISION TREE: predict top category
-    ====================================================== */
-    public String getMostViewedCategory(String userId) {
-
-        List<UserBehavior> list = repo.findByUserIdOrderByClicksDesc(userId);
-
-        if (list == null || list.isEmpty())
-            return null;
-
-        return list.get(0).getCategory();
+    public List<UserBehavior> getUserBehavior(String userId) {
+        return repo.findAllByUserId(userId);
     }
 }

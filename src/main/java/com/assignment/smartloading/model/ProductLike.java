@@ -3,20 +3,15 @@ package com.assignment.smartloading.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "product_likes",
-        indexes = {
-                @Index(name = "idx_user_product", columnList = "user_id, product_id", unique = true)
-        })
+@Table(name = "product_likes")
 public class ProductLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
     private String userId;
 
-    @Column(name = "product_id", nullable = false)
     private String productId;
 
     public ProductLike() {}
@@ -26,11 +21,28 @@ public class ProductLike {
         this.productId = productId;
     }
 
-    public Long getId() { return id; }
+    // GETTERS & SETTERS
+    public Long getId() {
+        return id;
+    }
 
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public String getUserId() {
+        return userId;
+    }
 
-    public String getProductId() { return productId; }
-    public void setProductId(String productId) { this.productId = productId; }
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 }
