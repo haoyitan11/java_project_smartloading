@@ -2,44 +2,64 @@ package com.assignment.smartloading.decision;
 
 import com.assignment.smartloading.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DecisionTreeEngine {
 
-    // Rule 1: add up to 8 from liked categories
+    //Rule 1: max 8 product from personal like
     public void applyLikes(RecommendationContext ctx) {
-        fillFromCategories(ctx, ctx.likedCategories, 8, ctx.stage1LikesAdded);
+        fillFromCategories(ctx, ctx.likedCategories, 8, ctx.stage1LikesAdded,
+                "Rule 1: Personal Likes");
     }
 
-    // Rule 2: add up to 4 from clicked categories
+    //Rule 2: max 4 product from personal clicks
     public void applyClicks(RecommendationContext ctx) {
-        fillFromCategories(ctx, ctx.clickedCategories, 4, ctx.stage2ClicksAdded);
+        fillFromCategories(ctx, ctx.clickedCategories, 4, ctx.stage2ClicksAdded,
+                "Rule 2: Personal Clicks");
     }
 
-    // Rule 3: add up to 3 from global categories
+    //Rule 3: fulfilling remaining to reach 15 products display (entire user click + like)
     public void applyGlobal(RecommendationContext ctx) {
-        fillFromCategories(ctx, ctx.globalCategories, 3, ctx.stage3GlobalAdded);
+        int remaining = ctx.remainingSlots();
+        fillFromCategories(ctx, ctx.globalCategories, remaining, ctx.stage3GlobalAdded,
+                "Rule 3: Global Fallback");
     }
 
-    private void fillFromCategories(RecommendationContext ctx,
-                                    List<String> categories,
-                                    int maxToAdd,
-                                    List<Product> stageList) {
-
-        if (categories == null || categories.isEmpty()) return;
+    //avoid duplicated, check products, checks category priority order
+    private void fillFromCategories(
+            RecommendationContext ctx,
+            List<String> categories,
+            int cap,
+            List<Product> stageOut,
+            String stepName
+    ) {
+        if (!ctx.needMore()) return;
+        if (categories == null || categories.isEmpty()) {
+            ctx.steps.add(stepName + " → skipped (no categories)");
+            return;
+        }
 
         int added = 0;
+        List<Product> pool = new ArrayList<>(ctx.allProducts);
 
+        //category priority order from database
         for (String cat : categories) {
-            for (Product p : ctx.allProducts) {
-                if (!ctx.needMore15()) return;
-                if (added >= maxToAdd) return;
+            if (!ctx.needMore() || added >= cap) break;
 
-                if (cat.equalsIgnoreCase(p.getCategory()) && !ctx.alreadyChosen(p)) {
-                    ctx.addProduct(p, stageList);
-                    added++;
+            for (Product p : pool) {
+                if (!ctx.needMore() || added >= cap) break;
+
+                if (cat.equalsIgnoreCase(p.getCategory())) {
+                    boolean ok = ctx.addProduct(p);
+                    if (ok) {
+                        stageOut.add(p);
+                        added++;
+                    }
                 }
             }
         }
+
+        ctx.steps.add(stepName + " → added " + added);
     }
 }

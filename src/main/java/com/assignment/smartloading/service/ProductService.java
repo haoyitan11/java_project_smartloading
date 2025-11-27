@@ -17,10 +17,6 @@ public class ProductService {
         return productRepository.findByCategory(category);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
     public List<String> getAllCategories() {
         return productRepository.findDistinctCategories();
     }
@@ -29,4 +25,3 @@ public class ProductService {
         return productRepository.findByProductId(productId);
     }
 }
-

@@ -15,9 +15,7 @@ public interface ProductLikeRepository extends JpaRepository<ProductLike, Long> 
 
     boolean existsByUserIdAndProductId(String userId, String productId);
 
-    void deleteByUserIdAndProductId(String userId, String productId);
-
-    // Most liked categories by a specific user
+    // most liked by reach person
     @Query("""
         SELECT p.category
         FROM ProductLike pl JOIN Product p ON pl.productId = p.productId
@@ -27,7 +25,7 @@ public interface ProductLikeRepository extends JpaRepository<ProductLike, Long> 
     """)
     List<String> findUserMostLikedCategories(String userId);
 
-    // Global: Most liked categories by ALL users
+    // most liked by all users
     @Query("""
         SELECT p.category
         FROM ProductLike pl JOIN Product p ON pl.productId = p.productId

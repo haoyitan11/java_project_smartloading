@@ -3,7 +3,7 @@ package com.assignment.smartloading.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "products")   //FIXED — must match PostgreSQL table name
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -22,7 +22,6 @@ public class Product {
     @Column(name = "image_url")
     private String imageUrl;
 
-    // --- getters and setters ---
     public String getProductId() { return productId; }
     public void setProductId(String id) { this.productId = id; }
 

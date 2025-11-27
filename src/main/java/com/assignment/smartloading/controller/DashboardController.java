@@ -29,21 +29,23 @@ public class DashboardController {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) return "redirect:/login";
 
-        // Run Sequential Decision Tree Pipeline
+        //run sequential decision tree pipeline
         DecisionTreeResult result = recommendationService.runDecisionTree(userId);
 
-        // Final 15 products only
+        //finalize 15 products only
         List<Product> finalProducts = result.getFinalProducts15();
         model.addAttribute("finalProducts", finalProducts);
 
-        // Top 3 categories in decision-tree priority order
+        //top 3 categories after decision-tree
         model.addAttribute("top3Categories", result.getTop3Categories());
 
-        // Category distribution over final 15 (still used for breakdown UI)
+        //category counting
         model.addAttribute("categoryCount", result.getCategoryCount());
 
-        // Like/unlike status + like count text
+        // like/unlike product status
         Map<String, Boolean> likedByUser = new HashMap<>();
+
+        //like count text
         Map<String, String> likeText = new HashMap<>();
 
         for (Product p : finalProducts) {

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Smart Lazy Loading System</title>
 
-    <!-- Bootstrap -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -26,10 +26,10 @@
 
         <h3 class="text-center mb-4 fw-bold">Smart Loading Login</h3>
 
-        <!-- Login Form -->
+        <!-- login form -->
         <form th:action="@{/login}" method="post">
 
-            <!-- Username -->
+            <!-- username -->
             <div class="mb-3">
                 <label class="form-label">Username</label>
                 <input type="text"
@@ -39,7 +39,7 @@
                        required>
             </div>
 
-            <!-- Password -->
+            <!-- password -->
             <div class="mb-3">
                 <label class="form-label">Password</label>
                 <input type="password"
@@ -49,7 +49,7 @@
                        required>
             </div>
 
-            <!-- Error message -->
+            <!-- error message -->
             <div th:if="${errorMessage}" class="alert alert-danger text-center py-2">
                 <span th:text="${errorMessage}"></span>
             </div>

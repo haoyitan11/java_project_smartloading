@@ -74,7 +74,7 @@
 
 <body>
 
-<!-- NAVBAR -->
+<!-- navigation bar -->
 <nav class="navbar navbar-dark bg-dark px-3">
   <div class="container-fluid d-flex justify-content-between align-items-center">
     <a class="navbar-brand fw-bold">Smart Loading System</a>
@@ -88,16 +88,16 @@
 
 <div class="container mt-4 page-wrap">
 
-  <!-- HEADER -->
+  <!-- header -->
   <div class="text-center mb-4">
     <h2 class="fw-bold">All Products</h2>
     <p class="text-muted">Browse the full catalog by category</p>
   </div>
 
-  <!-- LOOP CATEGORIES -->
+  <!-- loop categories -->
   <div th:each="entry : ${categoryMap}">
 
-    <!-- Category Header -->
+    <!-- category header -->
     <div class="category-header">
       <div>
         <span class="category-title" th:text="${entry.key}">Category</span>
@@ -106,7 +106,7 @@
       </div>
     </div>
 
-    <!-- Products grid (max 5 per row) -->
+    <!-- product grid (max 5) -->
     <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 g-4">
 
       <div class="col" th:each="p : ${entry.value}">
@@ -132,7 +132,7 @@
             RM 0.00
           </div>
 
-          <!-- LIKE + COUNT -->
+          <!-- like + count -->
           <div class="mt-2 d-flex align-items-center gap-2">
             <span class="like-btn"
                   th:attr="data-product-id=${p['productId']}"
@@ -147,7 +147,7 @@
             </small>
           </div>
 
-          <!-- VIEW DETAILS -->
+          <!-- view details -->
           <button class="btn btn-dark btn-sm mt-2"
                   th:attr="data-product-id=${p['productId']}"
                   onclick="recordUserClick(this)">
@@ -165,7 +165,7 @@
 </div>
 
 <script>
-  // Record user click
+  //record user click
   function recordUserClick(btn) {
       const productId = btn.getAttribute("data-product-id");
 
@@ -176,7 +176,7 @@
       });
   }
 
-  // LIKE FEATURE
+  //like feature
   function toggleLike(el) {
       const productId = el.getAttribute("data-product-id");
 

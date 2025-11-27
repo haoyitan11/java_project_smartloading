@@ -18,7 +18,7 @@ public class LoginController {
                                 Model model,
                                 HttpSession session) {
 
-        // If already logged in → go to dashboard
+        //if already logged in, direct to dashboard
         if (session.getAttribute("userId") != null) {
             return "redirect:/dashboard";
         }
@@ -39,7 +39,7 @@ public class LoginController {
 
         if (userId != null) {
 
-            // GUARANTEE: Session always has userId
+            //ensure session mapping with userId
             session.setAttribute("userId", userId);
 
             return "redirect:/dashboard";

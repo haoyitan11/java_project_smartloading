@@ -21,7 +21,6 @@ public class ProductLike {
         this.productId = productId;
     }
 
-    // GETTERS & SETTERS
     public Long getId() {
         return id;
     }

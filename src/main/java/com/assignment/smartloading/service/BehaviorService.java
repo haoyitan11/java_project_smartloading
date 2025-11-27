@@ -6,9 +6,6 @@ import com.assignment.smartloading.repository.UserBehaviorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-
 @Service
 public class BehaviorService {
 
@@ -17,20 +14,18 @@ public class BehaviorService {
 
     public void addClick(String userId, String productId, String category) {
 
+        // log click event in JSON file
         logger.logClick(userId, productId, category);
 
+        // update DB click counter per user+category
         UserBehavior existing = repo.findByUserIdAndCategory(userId, category);
 
         if (existing == null) {
             repo.save(new UserBehavior(userId, category, 1));
         } else {
             existing.setClicks(existing.getClicks() + 1);
-            existing.setLastUpdated(new Date());
             repo.save(existing);
+            // lastUpdated auto-handled by @PreUpdate
         }
-    }
-
-    public List<UserBehavior> getUserBehavior(String userId) {
-        return repo.findAllByUserId(userId);
     }
 }

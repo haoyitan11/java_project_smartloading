@@ -92,7 +92,7 @@
 
 <body>
 
-<!-- NAVBAR -->
+<!-- nav bar -->
 <nav class="navbar navbar-dark bg-dark px-3">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <a class="navbar-brand fw-bold">Smart Loading System</a>
@@ -105,10 +105,10 @@
     </div>
 </nav>
 
-<!-- MAIN CONTENT -->
+<!-- main content -->
 <div class="container mt-4 page-wrap">
 
-    <!-- HEADER -->
+    <!-- header -->
     <div class="header-card text-center mb-4">
         <h2 class="fw-bold mb-1">Recommended For You</h2>
 
@@ -116,7 +116,7 @@
             Final recommendation set contains 15 products.
         </p>
 
-        <!-- ✅ Top categories list (handles ties) -->
+        <!-- top categories list -->
         <div class="mb-2" th:if="${topCategories != null && !topCategories.isEmpty()}">
             <span class="text-muted">Top Categories (by count):</span>
             <span class="fw-bold text-dark"
@@ -125,7 +125,7 @@
             </span>
         </div>
 
-        <!-- ✅ Top 3 categories (decision-tree priority order) -->
+        <!-- top 3 categories based decision-tree priority order -->
         <div class="mb-1"
              th:if="${top3Categories != null && !top3Categories.isEmpty()}">
             <span class="text-muted">Top 3 categories (priority):</span>
@@ -137,7 +137,7 @@
 
     </div>
 
-    <!-- CATEGORY BREAKDOWN -->
+    <!-- category breakdown -->
     <div class="category-panel mb-4">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="fw-bold m-0">Category breakdown (Final 15)</h6>
@@ -152,7 +152,7 @@
         </div>
     </div>
 
-    <!-- FINAL 15 RECOMMENDED PRODUCTS -->
+    <!-- final 15 products -->
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h4 class="fw-bold m-0">Recommended Products (15)</h4>
         <small class="text-muted">Sorted by decision-tree priority</small>
@@ -177,7 +177,7 @@
                     RM 0.00
                 </strong>
 
-                <!-- LIKE BUTTON -->
+                <!-- like button -->
                 <div class="d-flex align-items-center mt-3">
                     <span class="heart"
                           th:attr="data-product-id=${p.productId}"
@@ -193,7 +193,7 @@
                     </span>
                 </div>
 
-                <!-- VIEW DETAILS BUTTON -->
+                <!-- view details button -->
                 <button class="btn btn-dark btn-sm mt-3"
                         th:attr="data-product-id=${p.productId}"
                         onclick="recordUserClick(this)">

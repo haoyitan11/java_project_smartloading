@@ -26,32 +26,30 @@ public class UnifiedRecommendationService {
 
         RecommendationContext ctx = new RecommendationContext(userId);
 
-        // ✅ Stage 0: Load ALL products (45)
+        // Stage 0: load all products
         ctx.allProducts = productRepo.findAll();
 
-        // ✅ User liked categories (sorted by most likes)
+        //rule 1 input
         ctx.likedCategories = likeRepo.findUserMostLikedCategories(userId);
 
-        // ✅ User clicked categories (sorted by most clicks)
+        //rule 2 input
         ctx.clickedCategories = behaviorRepo.findUserMostClickedCategories(userId);
 
-        // ✅ Global categories (liked + clicked)
-        List<String> globalLiked = likeRepo.findGlobalTopLikedCategories();
-        List<String> globalClicked = behaviorRepo.findGlobalTopClickedCategories();
+        //rule 3 input (entire user liked + clicked)
+        LinkedHashSet<String> globals = new LinkedHashSet<>();
+        globals.addAll(likeRepo.findGlobalTopLikedCategories());
+        globals.addAll(behaviorRepo.findGlobalTopClickedCategories());
+        ctx.globalCategories = new ArrayList<>(globals);
 
-        ctx.globalCategories = new ArrayList<>();
-        ctx.globalCategories.addAll(globalLiked);
-        ctx.globalCategories.addAll(globalClicked);
-
-        // ✅ Run sequential tree (8 + 4 + 3 caps)
+        //run sequential pipeline (8 + 4 + remaining)
         tree.evaluate(ctx);
 
-        // ✅ Category distribution inside FINAL 15
+        //category distribution after final stage
         Map<String, Long> categoryCount =
                 ctx.final15Products.stream()
                         .collect(Collectors.groupingBy(Product::getCategory, Collectors.counting()));
 
-        // ✅ Top 3 categories in priority order (by where they were filled)
+        //top 3 categories in decision-tree priority order
         LinkedHashSet<String> top3 = new LinkedHashSet<>();
         ctx.stage1LikesAdded.forEach(p -> top3.add(p.getCategory()));
         ctx.stage2ClicksAdded.forEach(p -> top3.add(p.getCategory()));
@@ -59,11 +57,11 @@ public class UnifiedRecommendationService {
         List<String> top3Categories = top3.stream().limit(3).toList();
 
         return new DecisionTreeResult(
-                ctx.allProducts,          // initial 45
-                ctx.stage1LikesAdded,     // stage1 (max 8)
-                ctx.stage2ClicksAdded,    // stage2 (max 4)
-                ctx.stage3GlobalAdded,    // stage3 (max 3)
-                ctx.final15Products,      // final 15
+                ctx.allProducts,
+                ctx.stage1LikesAdded,
+                ctx.stage2ClicksAdded,
+                ctx.stage3GlobalAdded,
+                ctx.final15Products,
                 categoryCount,
                 top3Categories,
                 ctx.steps

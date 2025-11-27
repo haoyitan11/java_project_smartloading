@@ -21,10 +21,7 @@ public class JsonLoggerService {
     private final ObjectWriter writer =
             new ObjectMapper().writerWithDefaultPrettyPrinter();
 
-
-    /* ============================================================
-       GENERIC LOGGER (now supports any event)
-    ============================================================ */
+    //logger generator (UUID, timestamp, userId)
     public void logEvent(String path, Map<String, Object> data) {
 
         try (FileWriter fw = new FileWriter(path, true)) {
@@ -50,9 +47,7 @@ public class JsonLoggerService {
     }
 
 
-    /* ============================================================
-       SPECIALIZED LOG METHODS
-    ============================================================ */
+    //track log when users click product
     public void logClick(String userId, String productId, String category) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("event", "product_click");
@@ -63,6 +58,7 @@ public class JsonLoggerService {
         logEvent(CLICK_LOG_PATH, map);
     }
 
+    //track log when users like product
     public void logLike(String userId, String productId, boolean liked) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("event", "product_like_toggle");

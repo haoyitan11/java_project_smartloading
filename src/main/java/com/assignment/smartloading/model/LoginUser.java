@@ -9,7 +9,7 @@ public class LoginUser {
 
     @Id
     @Column(name = "user_id")
-    private String userId; // PRIMARY KEY
+    private String userId;
 
     private String username;
     private String password;
@@ -21,7 +21,6 @@ public class LoginUser {
 
     public LoginUser() {}
 
-    // getters & setters
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
 

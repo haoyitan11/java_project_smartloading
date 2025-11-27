@@ -8,13 +8,10 @@ import java.util.List;
 
 public interface UserBehaviorRepository extends JpaRepository<UserBehavior, Long> {
 
+    //update clicks per user + category
     UserBehavior findByUserIdAndCategory(String userId, String category);
 
-    List<UserBehavior> findByUserIdOrderByClicksDesc(String userId);
-
-    List<UserBehavior> findAllByUserId(String userId);
-
-    /** PERSONAL — Top categories clicked by this user */
+    //top clicked categories for this user
     @Query(value =
             "SELECT category " +
                     "FROM user_behavior " +
@@ -24,7 +21,7 @@ public interface UserBehaviorRepository extends JpaRepository<UserBehavior, Long
             nativeQuery = true)
     List<String> findUserMostClickedCategories(String userId);
 
-    /** GLOBAL — Top categories clicked by ALL users */
+    //top clicked categories for all users
     @Query(value =
             "SELECT category " +
                     "FROM user_behavior " +

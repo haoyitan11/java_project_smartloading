@@ -6,11 +6,11 @@ import java.util.Map;
 
 public class DecisionTreeResult {
 
-    private final List<Product> initialProducts; // 45 all
-    private final List<Product> stage1Liked;     // <= 8
-    private final List<Product> stage2Clicks;    // <= 4
-    private final List<Product> stage3Global;    // <= 3
-    private final List<Product> finalProducts15; // 15
+    private final List<Product> initialProducts; // 45 product total
+    private final List<Product> stage1Liked;     // 8 products max
+    private final List<Product> stage2Clicks;    // 4 products max
+    private final List<Product> stage3Global;    // fulfill remaining
+    private final List<Product> finalProducts15; // first 15 product displayed
 
     private final Map<String, Long> categoryCount;
     private final List<String> top3Categories;

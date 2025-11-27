@@ -9,7 +9,8 @@ public class DecisionNode {
     private final Predicate<RecommendationContext> rule;
     private final Consumer<RecommendationContext> action;
 
-    private DecisionNode next;
+    private DecisionNode nextIfTrue;
+    private DecisionNode nextIfFalse;
 
     public DecisionNode(String name,
                         Predicate<RecommendationContext> rule,
@@ -19,19 +20,19 @@ public class DecisionNode {
         this.action = action;
     }
 
-    public DecisionNode next(DecisionNode n) {
-        this.next = n;
-        return n;
-    }
+    public DecisionNode nextIfTrue(DecisionNode n) { this.nextIfTrue = n; return this; }
+    public DecisionNode nextIfFalse(DecisionNode n) { this.nextIfFalse = n; return this; }
 
     public void evaluate(RecommendationContext ctx) {
         ctx.steps.add(name);
 
-        boolean ok = (rule == null) || rule.test(ctx);
-        if (ok && action != null) action.accept(ctx);
+        if (action != null) action.accept(ctx);
 
-        if (ctx.needMore15() && next != null) {
-            next.evaluate(ctx);
-        }
+        if (!ctx.needMore()) return;
+
+        boolean result = (rule == null) || rule.test(ctx);
+
+        if (result && nextIfTrue != null) nextIfTrue.evaluate(ctx);
+        if (!result && nextIfFalse != null) nextIfFalse.evaluate(ctx);
     }
 }

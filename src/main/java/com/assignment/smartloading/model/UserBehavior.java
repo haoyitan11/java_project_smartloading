@@ -24,7 +24,7 @@ public class UserBehavior {
         this.userId = userId;
         this.category = category;
         this.clicks = clicks;
-        this.lastUpdated = new Date(); // initialize timestamp
+        this.lastUpdated = new Date();
     }
 
     @PreUpdate
@@ -37,7 +37,6 @@ public class UserBehavior {
         lastUpdated = new Date();
     }
 
-    // getters and setters
     public Long getId() { return id; }
 
     public String getUserId() { return userId; }

@@ -6,8 +6,6 @@ import com.assignment.smartloading.repository.ProductLikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class LikeService {
 
@@ -20,7 +18,6 @@ public class LikeService {
     public boolean toggleLike(String userId, String productId) {
 
         var existing = repo.findByUserIdAndProductId(userId, productId);
-
         boolean nowLiked;
 
         if (existing.isPresent()) {
@@ -32,7 +29,6 @@ public class LikeService {
         }
 
         logger.logLike(userId, productId, nowLiked);
-
         return nowLiked;
     }
 
@@ -42,9 +38,5 @@ public class LikeService {
 
     public boolean isLiked(String userId, String productId) {
         return repo.existsByUserIdAndProductId(userId, productId);
-    }
-
-    public List<String> getTopLikedCategories(String userId) {
-        return repo.findUserMostLikedCategories(userId);
     }
 }

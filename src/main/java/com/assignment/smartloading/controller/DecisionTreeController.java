@@ -20,7 +20,7 @@ public class DecisionTreeController {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) return "redirect:/login";
 
-        // Correct method name
+        //run decision tree
         DecisionTreeResult result = recommendationService.runDecisionTree(userId);
 
         model.addAttribute("initialProducts", result.getInitialProducts());

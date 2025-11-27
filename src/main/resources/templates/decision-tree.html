@@ -9,7 +9,7 @@
     <style>
         body { background:#eef2f7; }
 
-        /* ===== Tree Panel ===== */
+        /* panel */
         .tree-panel {
             background: #f7f9fc;
             border: 1px solid #dde3ea;
@@ -59,10 +59,6 @@
             color: #111827;
         }
 
-        @media (max-width: 576px) {
-            .node { min-width: 250px; font-size: 0.95rem; padding: 14px 18px;}
-        }
-
         .connector {
             height: 40px;
             width: 3px;
@@ -81,7 +77,11 @@
             border: 1px solid #f0ad4e;
         }
 
-        /* ===== Products ===== */
+        @media (max-width: 576px) {
+            .node { min-width: 250px; font-size: 0.95rem; padding: 14px 18px;}
+        }
+
+        /* products */
         .product-box {
             border: 1px solid #ccd3da;
             background: #fff;
@@ -131,17 +131,15 @@
 
     <h2 class="fw-bold text-center">Decision Tree (Sequential Priority)</h2>
     <p class="text-muted text-center">
-        Load all products → apply rules (8 → 4 → 3) → final 15 products
+        Load all products → apply rules (8 → 4 → fill remaining) → final 15 products
     </p>
 
-    <!-- ===================== -->
-    <!--  SEQUENTIAL TREE FLOW -->
-    <!-- ===================== -->
+    <!--  sequential tree flow -->
     <div class="tree-panel text-center">
 
-        <!-- Rule 1 -->
+        <!-- rule 1 -->
         <div class="node leaf"
-             th:classappend="${steps.contains('Rule 1: Fill up to 8 from Personal Likes')} ? 'highlight' : ''">
+             th:classappend="${steps.toString().contains('Rule 1: Personal Likes')} ? 'highlight' : ''">
             <div class="node-title">
                 Rule 1 — Personal Likes
                 <span class="cap-badge">MAX 8</span>
@@ -154,9 +152,9 @@
 
         <div class="connector"></div>
 
-        <!-- Rule 2 -->
+        <!-- rule 2 -->
         <div class="node leaf"
-             th:classappend="${steps.contains('Rule 2: Fill up to 4 from Personal Clicks')} ? 'highlight' : ''">
+             th:classappend="${steps.toString().contains('Rule 2: Personal Clicks')} ? 'highlight' : ''">
             <div class="node-title">
                 Rule 2 — Personal Clicks
                 <span class="cap-badge">MAX 4</span>
@@ -169,34 +167,30 @@
 
         <div class="connector"></div>
 
-        <!-- Rule 3 -->
+        <!-- rule 3 -->
         <div class="node leaf"
-             th:classappend="${steps.contains('Rule 3: Fill up to 3 from Global Likes+Clicks')} ? 'highlight' : ''">
+             th:classappend="${steps.toString().contains('Rule 3: Global Fallback')} ? 'highlight' : ''">
             <div class="node-title">
                 Rule 3 — Global Fallback
-                <span class="cap-badge">MAX 3</span>
+                <span class="cap-badge">FILL REMAINING</span>
             </div>
             <div class="node-desc">
-                If still less than 15 total → fill remaining slots
-                using global most-liked + most-clicked categories, up to 3.
+                If still less than 15 total → keep adding products from
+                global most-liked + most-clicked categories until 15 is reached.
             </div>
         </div>
 
         <div class="connector"></div>
 
-        <!-- Final -->
+        <!-- final products -->
         <div class="node highlight">
             Final Output: 15 Recommended Products
         </div>
     </div>
 
 
-    <!-- ======================= -->
-    <!--   PRODUCTS DISPLAY      -->
-    <!--   (MAX 5 PER ROW)       -->
-    <!-- ======================= -->
-
-    <!-- Stage 0 -->
+    <!-- product display -->
+    <!-- stage 0 -->
     <h4 class="section-title">Stage 0 — All Products Loaded</h4>
     <p class="tiny-muted">Full product list from database (≈45).</p>
 
@@ -213,7 +207,7 @@
 
     <div class="section-divider"></div>
 
-    <!-- Stage 1 -->
+    <!-- stage 1 -->
     <h4 class="section-title">
         Stage 1 — Products Added by Personal Likes
         <span class="tiny-muted">(max 8)</span>
@@ -236,7 +230,7 @@
 
     <div class="section-divider"></div>
 
-    <!-- Stage 2 -->
+    <!-- stage 2 -->
     <h4 class="section-title">
         Stage 2 — Products Added by Personal Clicks
         <span class="tiny-muted">(max 4)</span>
@@ -259,10 +253,10 @@
 
     <div class="section-divider"></div>
 
-    <!-- Stage 3 -->
+    <!-- stage 3 -->
     <h4 class="section-title">
         Stage 3 — Products Added by Global Fallback
-        <span class="tiny-muted">(max 3)</span>
+        <span class="tiny-muted">(fills remaining)</span>
     </h4>
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
@@ -277,7 +271,7 @@
 
     <div class="section-divider"></div>
 
-    <!-- Final -->
+    <!-- final -->
     <h3 class="section-title text-center">Final 15 Recommended Products</h3>
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3 justify-content-center">
@@ -290,7 +284,7 @@
         </div>
     </div>
 
-    <!-- Debug steps -->
+    <!-- steps showing -->
     <div class="mt-4">
         <h6 class="fw-bold">Decision Steps (for reference)</h6>
         <ul class="list-group">

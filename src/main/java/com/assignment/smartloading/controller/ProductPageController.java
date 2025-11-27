@@ -27,7 +27,7 @@ public class ProductPageController {
         String userId = (String) session.getAttribute("userId");
         if (userId == null) return "redirect:/login";
 
-        // Load all categories
+        //load all categories
         List<String> categories = productService.getAllCategories();
         Map<String, List<Map<String, Object>>> categoryMap = new LinkedHashMap<>();
 

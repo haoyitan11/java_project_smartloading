@@ -38,3 +38,91 @@
   "event" : "product_like_toggle",
   "productId" : "HP001"
 }
+{
+  "logId" : "86dbe96a-9092-4ecc-a06b-6df69c97979c",
+  "timestamp" : "2025-11-27T20:15:56.772349+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "UNLIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP002"
+}
+{
+  "logId" : "5ee2311d-7853-4431-8c01-6403f9d4ab1d",
+  "timestamp" : "2025-11-27T20:15:57.4237228+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "UNLIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP003"
+}
+{
+  "logId" : "38c23f77-8d2b-48e5-8811-882f991953e0",
+  "timestamp" : "2025-11-27T20:15:59.4460092+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "LIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP002"
+}
+{
+  "logId" : "b7229166-365b-4b5c-ae31-dec719e9a95d",
+  "timestamp" : "2025-11-27T20:16:00.9619226+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "UNLIKE",
+  "event" : "product_like_toggle",
+  "productId" : "WC001"
+}
+{
+  "logId" : "c08a5efe-f1e1-4434-8bb3-306115a05299",
+  "timestamp" : "2025-11-27T20:16:13.9080577+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "LIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP003"
+}
+{
+  "logId" : "54b3558f-fcaa-4a93-bb3c-a893c91a6db2",
+  "timestamp" : "2025-11-27T20:16:14.5828711+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "UNLIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP003"
+}
+{
+  "logId" : "f72a5c60-39cd-482f-9b64-a9741a755f81",
+  "timestamp" : "2025-11-27T20:17:01.6062725+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "LIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP003"
+}
+{
+  "logId" : "93b2d599-626a-40df-8178-4249fd5507d1",
+  "timestamp" : "2025-11-27T20:17:10.9271599+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "UNLIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP003"
+}
+{
+  "logId" : "e19c3565-0a76-4e19-83ad-aae9c937af2c",
+  "timestamp" : "2025-11-27T20:19:06.7926962+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "UNLIKE",
+  "event" : "product_like_toggle",
+  "productId" : "HP002"
+}
+{
+  "logId" : "5c95b457-f005-4021-9c81-42b50d428c61",
+  "timestamp" : "2025-11-27T20:19:17.1338782+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "LIKE",
+  "event" : "product_like_toggle",
+  "productId" : "LP002"
+}
+{
+  "logId" : "2cb68b78-3488-4634-85ec-5016ba0f25f7",
+  "timestamp" : "2025-11-27T20:19:18.1724302+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "action" : "LIKE",
+  "event" : "product_like_toggle",
+  "productId" : "LP001"
+}
