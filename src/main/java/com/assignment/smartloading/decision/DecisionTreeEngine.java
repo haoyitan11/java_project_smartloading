@@ -26,7 +26,7 @@ public class DecisionTreeEngine {
                 "Rule 3: Global Fallback");
     }
 
-    //avoid duplicated, check products, checks category priority order
+    //Avoid duplicated, check products, checks category priority order
     private void fillFromCategories(
             RecommendationContext ctx,
             List<String> categories,

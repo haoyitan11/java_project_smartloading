@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:12
+    container_name: smartloading_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: user123
+    ports:
+      - "5435:5432"   #avoid host 5432 conflict
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - smartnet
+
+  redis:
+    image: redis:7
+    container_name: smartloading_redis
+    restart: always
+    command: ["redis-server", "--requirepass", "user123"]
+    ports:
+      - "6380:6379"
+    networks:
+      - smartnet
+
+  app:
+    image: smartloading:local
+    container_name: smartloading_application
+    restart: always
+    ports:
+      - "9090:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: user123
+
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_PASSWORD: user123
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - smartnet
+
+networks:
+  smartnet:
+    driver: bridge
+
+volumes:
+  pgdata:

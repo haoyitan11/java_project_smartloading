@@ -1,7 +1,7 @@
 package com.assignment.smartloading.controller;
 
 import com.assignment.smartloading.dto.DecisionTreeResult;
-import com.assignment.smartloading.model.Product;
+import com.assignment.smartloading.dto.ProductDTO;
 import com.assignment.smartloading.service.LikeService;
 import com.assignment.smartloading.service.UnifiedRecommendationService;
 import jakarta.servlet.http.HttpSession;
@@ -10,9 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class DashboardController {
@@ -25,36 +24,60 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String showDashboard(Model model, HttpSession session) {
-
         String userId = (String) session.getAttribute("userId");
-        if (userId == null) return "redirect:/login";
+        if (userId == null) {
+            return "redirect:/login";
+        }
 
-        //run sequential decision tree pipeline
+        // run decision tree
         DecisionTreeResult result = recommendationService.runDecisionTree(userId);
 
-        //finalize 15 products only
-        List<Product> finalProducts = result.getFinalProducts15();
+        List<ProductDTO> finalProducts = Optional.ofNullable(result.getFinalProducts15()).orElse(Collections.emptyList());
         model.addAttribute("finalProducts", finalProducts);
 
-        //top 3 categories after decision-tree
-        model.addAttribute("top3Categories", result.getTop3Categories());
+        model.addAttribute("top3Categories", Optional.ofNullable(result.getTop3Categories()).orElse(Collections.emptyList()));
+        model.addAttribute("categoryCount", Optional.ofNullable(result.getCategoryCount()).orElse(Collections.emptyMap()));
 
-        //category counting
-        model.addAttribute("categoryCount", result.getCategoryCount());
+        //prepare product ids for like summary
+        List<String> productIds = finalProducts.stream()
+                .map(ProductDTO::getProductId)
+                .collect(Collectors.toList());
 
-        // like/unlike product status
+        //fetch like info (go to redis checking first, if no data then go to postgreSQL)
+        Map<String, Map<String, Object>> likeSummary = likeService.fetchLikeSummaryForProducts(userId, productIds);
+
         Map<String, Boolean> likedByUser = new HashMap<>();
-
-        //like count text
         Map<String, String> likeText = new HashMap<>();
 
-        for (Product p : finalProducts) {
-            boolean liked = likeService.isLiked(userId, p.getProductId());
-            long count = likeService.getLikes(p.getProductId());
+        for (ProductDTO p : finalProducts) {
+            String pid = p.getProductId();
+            Map<String, Object> info = likeSummary.get(pid);
 
-            likedByUser.put(p.getProductId(), liked);
-            likeText.put(p.getProductId(),
-                    (count == 1 ? "1 like" : count + " likes"));
+            boolean liked = false;
+            long totalLikes = 0L;
+
+            if (info != null) {
+                Object likedObj = info.get("liked");
+                if (likedObj instanceof Boolean) {
+                    liked = (Boolean) likedObj;
+                } else if (likedObj instanceof String) {
+                    liked = Boolean.parseBoolean((String) likedObj);
+                }
+
+                Object totalObj = info.get("totalLikes");
+                if (totalObj instanceof Number) {
+                    totalLikes = ((Number) totalObj).longValue();
+                } else if (totalObj instanceof String) {
+                    try {
+                        totalLikes = Long.parseLong((String) totalObj);
+                    } catch (NumberFormatException ignored) {
+                        totalLikes = 0L;
+                    }
+                }
+            }
+
+            likedByUser.put(pid, liked);
+            likeText.put(pid, totalLikes == 1 ? "1 like" : (totalLikes + " likes"));
         }
 
         model.addAttribute("userLikes", likedByUser);

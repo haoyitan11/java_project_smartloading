@@ -174,3 +174,27 @@
   "event" : "product_click",
   "productId" : "SH003"
 }
+{
+  "logId" : "e82b384b-97a9-4a85-b45c-b9dd192ca614",
+  "timestamp" : "2025-12-08T21:46:41.5749984+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "video-games",
+  "event" : "product_click",
+  "productId" : "GM001"
+}
+{
+  "logId" : "4cd504b0-3137-4a11-9bb4-0aa4b2d8cdff",
+  "timestamp" : "2025-12-08T21:46:42.327608+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "video-games",
+  "event" : "product_click",
+  "productId" : "GM001"
+}
+{
+  "logId" : "9be8ad80-76ca-4adc-ac32-8980be6f51ec",
+  "timestamp" : "2025-12-08T21:46:42.8224394+08:00",
+  "userId" : "092ab9e0-6396-433c-b4ff-aae5c3025a0c",
+  "category" : "video-games",
+  "event" : "product_click",
+  "productId" : "GM001"
+}

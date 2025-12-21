@@ -15,7 +15,7 @@ public class UserService {
 
     public String validateUserAndReturnId(String username, String password) {
 
-        //find user by username ONLY
+        //find user by username only
         LoginUser user = repo.findByUsername(username);
 
         if (user == null)

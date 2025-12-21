@@ -9,191 +9,154 @@
           rel="stylesheet">
 
     <style>
-        body { background: #eef2f7; }
+        body { background: #f5f7fa; }
 
-        .page-wrap {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .page-wrap { max-width: 1250px; margin: 0 auto; }
 
+        /* header */
         .header-card {
-            background: white;
-            border: 1px solid #dde3ea;
+            background: #ffffff;
             border-radius: 14px;
-            padding: 18px 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            padding: 24px 22px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
         }
 
+        /* product fixed size */
         .product-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 14px;
             height: 100%;
             display: flex;
             flex-direction: column;
-            background: white;
-            border: 1px solid #ddd;
-            transition: 0.15s ease;
+            transition: 0.12s ease;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
         }
 
         .product-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.10);
         }
 
         .product-img {
-            height: 180px;
+            width: 100%;
+            height: 160px;
             object-fit: contain;
-            border-radius: 10px;
             background: #ffffff;
+            border-radius: 10px;
         }
 
         .heart {
-            cursor: pointer;
             font-size: 22px;
+            cursor: pointer;
             user-select: none;
             transition: 0.15s ease;
         }
 
         .category-panel {
-            background: #fff;
-            border: 1px solid #dde3ea;
+            background: #ffffff;
             border-radius: 12px;
-            padding: 14px 16px;
-        }
-
-        .small-muted {
-            font-size: 0.95rem;
-            color: #6c757d;
+            padding: 18px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 30px;
         }
 
         .category-chip {
             background: #f1f5f9;
-            border: 1px solid #dbe2ea;
             border-radius: 999px;
-            padding: 4px 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #111827;
-            display: inline-flex;
+            padding: 5px 12px;
+            border: 1px solid #d6dee6;
+            display: flex;
             align-items: center;
+            font-size: 0.9rem;
             gap: 6px;
         }
 
-        .category-chip .count {
-            background: #6c757d;
-            color: white;
-            border-radius: 999px;
-            padding: 0 7px;
+        .count {
+            background: #334155;
+            color: #fff;
+            padding: 1px 7px;
             font-size: 0.8rem;
-            font-weight: 700;
+            border-radius: 50px;
         }
     </style>
 </head>
 
 <body>
 
-<!-- nav bar -->
+<!-- navigation bar -->
 <nav class="navbar navbar-dark bg-dark px-3">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-        <a class="navbar-brand fw-bold">Smart Loading System</a>
+    <div class="container-fluid d-flex justify-content-between">
+        <span class="navbar-brand fw-bold">Smart Loading System</span>
 
         <div class="d-flex gap-2">
             <a href="/products" class="btn btn-sm btn-light">All Products</a>
-            <a href="/decision-tree" class="btn btn-sm btn-warning">Decision Tree Result</a>
+            <a href="/decision-tree" class="btn btn-sm btn-warning">Decision Tree</a>
             <a href="/logout" class="btn btn-sm btn-danger">Logout</a>
         </div>
     </div>
 </nav>
 
-<!-- main content -->
+
 <div class="container mt-4 page-wrap">
 
-    <!-- header -->
+    <!-- header section -->
     <div class="header-card text-center mb-4">
         <h2 class="fw-bold mb-1">Recommended For You</h2>
+        <p class="text-muted small mb-1">15 products selected by decision-tree AI</p>
 
-        <p class="small-muted mb-2">
-            Final recommendation set contains 15 products.
-        </p>
-
-        <!-- top categories list -->
-        <div class="mb-2" th:if="${topCategories != null && !topCategories.isEmpty()}">
-            <span class="text-muted">Top Categories (by count):</span>
-            <span class="fw-bold text-dark"
-                  th:text="${#strings.listJoin(topCategories, ', ')}">
-                watches, furniture, games
-            </span>
+        <div th:if="${top3Categories != null}">
+            <span class="text-muted">Top 3 categories: </span>
+            <span class="fw-bold text-dark" th:text="${#strings.listJoin(top3Categories, ', ')}"></span>
         </div>
-
-        <!-- top 3 categories based decision-tree priority order -->
-        <div class="mb-1"
-             th:if="${top3Categories != null && !top3Categories.isEmpty()}">
-            <span class="text-muted">Top 3 categories (priority):</span>
-            <span class="fw-bold text-dark ms-1"
-                  th:text="${#strings.listJoin(top3Categories, ', ')}">
-                watches, video games, furniture
-            </span>
-        </div>
-
     </div>
 
-    <!-- category breakdown -->
-    <div class="category-panel mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="fw-bold m-0">Category breakdown (Final 15)</h6>
-            <small class="text-muted">count of products per category</small>
+    <!-- categories grid -->
+    <div class="category-panel">
+        <div class="d-flex justify-content-between mb-3">
+            <h6 class="fw-bold m-0">Category Breakdown (Final 15)</h6>
+            <small class="text-muted">products per category</small>
         </div>
 
         <div class="d-flex flex-wrap gap-2">
             <div th:each="entry : ${categoryCount.entrySet()}" class="category-chip">
-                <span th:text="${entry.key}">category</span>
-                <span class="count" th:text="${entry.value}">0</span>
+                <span th:text="${entry.key}"></span>
+                <span class="count" th:text="${entry.value}"></span>
             </div>
         </div>
     </div>
 
-    <!-- final 15 products -->
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <h4 class="fw-bold m-0">Recommended Products (15)</h4>
-        <small class="text-muted">Sorted by decision-tree priority</small>
+    <!-- product grid -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0">Recommended Products</h4>
+        <small class="text-muted">Based on decision-tree scoring</small>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 g-4 mt-1">
-        <div class="col" th:each="p : ${finalProducts}">
-            <div class="product-card shadow-sm h-100">
+    <div class="row g-4">
 
-                <img th:src="${p.imageUrl}" class="product-img" alt="Product image">
+        <div class="col-6 col-md-4 col-lg-3 col-xl-2" th:each="p : ${finalProducts}">
+            <div class="product-card">
 
-                <h6 class="mt-3 fw-bold text-truncate" th:text="${p.productName}">
-                    Product Name
-                </h6>
+                <img th:src="${p.imageUrl}" class="product-img" alt="Product" />
 
-                <small class="text-muted" th:text="${p.category}">
-                    Category
-                </small>
+                <h6 class="fw-bold mt-3 text-truncate" th:text="${p.productName}"></h6>
+                <small class="text-muted" th:text="${p.category}"></small>
 
-                <strong class="text-primary mt-2"
-                        th:text="'RM ' + ${p.price}">
-                    RM 0.00
-                </strong>
+                <div class="fw-bold text-primary mt-2" th:text="'RM ' + ${p.price}"></div>
 
-                <!-- like button -->
+                <!-- like heart -->
                 <div class="d-flex align-items-center mt-3">
                     <span class="heart"
-                          th:attr="data-product-id=${p.productId}"
-                          th:text="${userLikes[p.productId]} ? '❤' : '🤍'"
-                          th:classappend="${userLikes[p.productId]} ? ' text-danger' : ' text-secondary'"
-                          onclick="toggleLike(this)">
-                    </span>
+                          th:attr="data-product-id=${p.productId},data-liked=${userLikes[p.productId]}"
+                          onclick="toggleLike(this)">🤍</span>
 
                     <span class="ms-2"
                           th:attr="id=${'likes-' + p.productId}"
-                          th:text="${likeText[p.productId]}">
-                        0 likes
-                    </span>
+                          th:text="${likeText[p.productId]}"></span>
                 </div>
 
-                <!-- view details button -->
                 <button class="btn btn-dark btn-sm mt-3"
                         th:attr="data-product-id=${p.productId}"
                         onclick="recordUserClick(this)">
@@ -202,35 +165,44 @@
 
             </div>
         </div>
-    </div>
 
+    </div>
 </div>
 
-<!-- JS -->
+
+<!-- javascript -->
 <script>
+    /* INITIALIZE HEARTS */
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".heart").forEach(h => {
+            const liked = h.getAttribute("data-liked") === "true";
+            h.textContent = liked ? "❤" : "🤍";
+            h.classList.add(liked ? "text-danger" : "text-secondary");
+        });
+    });
+
     function recordUserClick(btn) {
-        const productId = btn.getAttribute("data-product-id");
+        const id = btn.getAttribute("data-product-id");
         fetch("/api/behavior/click", {
             method: "POST",
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            body: "productId=" + encodeURIComponent(productId)
+            body: "productId=" + encodeURIComponent(id)
         });
     }
 
     function toggleLike(heart) {
-        const productId = heart.getAttribute("data-product-id");
+        const id = heart.getAttribute("data-product-id");
 
         fetch("/api/likes/toggle", {
             method: "POST",
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            body: "productId=" + encodeURIComponent(productId)
+            body: "productId=" + encodeURIComponent(id)
         })
         .then(res => res.json())
         .then(data => {
-            if (data.error) {
-                alert("Please login first.");
-                return;
-            }
+            if (data.error) { alert("Please login first."); return; }
+
+            heart.setAttribute("data-liked", data.liked);
 
             if (data.liked) {
                 heart.textContent = "❤";
@@ -242,10 +214,9 @@
                 heart.classList.remove("text-danger");
             }
 
-            const cnt = document.getElementById("likes-" + productId);
-            cnt.textContent = data.totalLikes + " likes";
-        })
-        .catch(err => console.error("LIKE ERROR:", err));
+            document.getElementById("likes-" + id).textContent =
+                data.totalLikes + " likes";
+        });
     }
 </script>
 
