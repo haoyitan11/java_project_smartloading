@@ -20,9 +20,13 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            # PostgreSQL in kubernetes
+            # Use Spring profile for k8s or local
+            - name: SPRING_PROFILES_ACTIVE
+              value: "k8s"  # Use k8s profile if running in Kubernetes
+
+            # PostgreSQL connection settings
             - name: SPRING_DATASOURCE_URL
-              value: "jdbc:postgresql://postgres:5432/mydb"
+              value: "jdbc:postgresql://postgres.smartloading.svc.cluster.local:5432/mydb"  # Connect to PostgreSQL StatefulSet service
             - name: SPRING_DATASOURCE_USERNAME
               value: "postgres"
             - name: SPRING_DATASOURCE_PASSWORD
@@ -31,9 +35,9 @@ spec:
                   name: smartloading-secrets
                   key: POSTGRES_PASSWORD
 
-            # Redis in kubernetes
+            # Redis connection settings for k8s
             - name: SPRING_DATA_REDIS_HOST
-              value: "redis"
+              value: "redis"  # Redis StatefulSet service
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
             - name: SPRING_DATA_REDIS_PASSWORD

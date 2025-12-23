@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres
   namespace: smartloading
 spec:
-  replicas: 1
+  serviceName: "postgres"
+  replicas: 1  # You can adjust the replicas as needed
   selector:
     matchLabels:
       app: postgres
@@ -31,10 +32,14 @@ spec:
           volumeMounts:
             - name: pgdata
               mountPath: /var/lib/postgresql/data
-      volumes:
-        - name: pgdata
-          persistentVolumeClaim:
-            claimName: postgres-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: pgdata
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
@@ -42,9 +47,8 @@ metadata:
   name: postgres
   namespace: smartloading
 spec:
-  type: ClusterIP
-  selector:
-    app: postgres
   ports:
     - port: 5432
       targetPort: 5432
+  selector:
+    app: postgres

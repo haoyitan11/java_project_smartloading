@@ -1,6 +1,6 @@
 package com.assignment.smartloading.service;
 
-import com.assignment.smartloading.cache.LikeCacheRepository;
+import com.assignment.smartloading.cache.like.LikeCache;
 import com.assignment.smartloading.logging.JsonLoggerService;
 import com.assignment.smartloading.model.ProductLike;
 import com.assignment.smartloading.repository.ProductLikeRepository;
@@ -21,12 +21,12 @@ public class LikeService {
 
     private final ProductLikeRepository repo;
     private final JsonLoggerService logger;
-    private final LikeCacheRepository cache;
+    private final LikeCache cache; // ✅ interface (NoRedisLikeCache or RedisLikeCache)
     private final UnifiedRecommendationService recommendationService;
 
     public LikeService(ProductLikeRepository repo,
                        JsonLoggerService logger,
-                       LikeCacheRepository cache,
+                       LikeCache cache,
                        UnifiedRecommendationService recommendationService) {
         this.repo = repo;
         this.logger = logger;
@@ -34,13 +34,11 @@ public class LikeService {
         this.recommendationService = recommendationService;
     }
 
-    //load postgreSQL first, then store data into redis
     private Set<String> loadUserLikesFromDB(String userId) {
         var list = repo.findByUserId(userId);
         return list.stream().map(ProductLike::getProductId).collect(Collectors.toSet());
     }
 
-    //checking at postgreSQL first, then sync to redis after commit
     @Transactional
     public boolean toggleLike(String userId, String productId) {
 
@@ -59,15 +57,13 @@ public class LikeService {
 
         Runnable afterCommitWork = () -> {
             try {
-                // evict userLikes set (forces fresh rebuild next read)
+                // ✅ works: Redis impl does real work, local impl no-op
                 cache.evictUserLikes(userId);
 
-                // refresh product count from DB (source of truth)
                 long dbCount = repo.countByProductId(productId);
                 cache.cacheProductLikesCount(productId, dbCount);
-
             } catch (Exception e) {
-                log.warn("Redis sync failed after like commit", e);
+                log.warn("Like cache sync failed after commit userId={}, productId={}", userId, productId, e);
             }
 
             try { recommendationService.evictDecisionTreeForUser(userId); } catch (Exception ignored) {}
@@ -84,7 +80,6 @@ public class LikeService {
         return nowLiked;
     }
 
-    //read data from redis
     public boolean isLiked(String userId, String productId) {
         try {
             if (cache.hasUserLikesKey(userId)) {
@@ -92,7 +87,6 @@ public class LikeService {
                 return ids != null && ids.contains(productId);
             }
 
-            //if redis data missing > go to postgreSQL > refill
             Set<String> fromDB = loadUserLikesFromDB(userId);
             cache.cacheUserLikes(userId, fromDB);
             return fromDB.contains(productId);
@@ -102,7 +96,6 @@ public class LikeService {
         }
     }
 
-    //cache data
     public long getLikes(String productId) {
         try {
             Long cached = cache.getProductLikesCount(productId);
@@ -117,13 +110,10 @@ public class LikeService {
         }
     }
 
-    //dashboard, checking at DB first, then redis
     public Map<String, Map<String, Object>> fetchLikeSummaryForProducts(String userId, List<String> productIds) {
-
         Map<String, Map<String, Object>> out = new HashMap<>();
         if (productIds == null || productIds.isEmpty()) return out;
 
-        //load user like set from redis
         Set<String> likedSet;
         try {
             if (cache.hasUserLikesKey(userId)) {
@@ -136,7 +126,6 @@ public class LikeService {
             likedSet = loadUserLikesFromDB(userId);
         }
 
-       //load counts in redis
         List<Long> cachedCounts;
         try {
             cachedCounts = cache.getProductLikesCounts(productIds);
@@ -150,19 +139,15 @@ public class LikeService {
             long totalLikes;
             Long c = (cachedCounts.size() > i) ? cachedCounts.get(i) : null;
 
-            if (c != null) {
-                totalLikes = c;
-            } else {
+            if (c != null) totalLikes = c;
+            else {
                 totalLikes = repo.countByProductId(pid);
                 try { cache.cacheProductLikesCount(pid, totalLikes); } catch (Exception ignored) {}
             }
 
             boolean liked = likedSet.contains(pid);
 
-            out.put(pid, Map.of(
-                    "liked", liked,
-                    "totalLikes", totalLikes
-            ));
+            out.put(pid, Map.of("liked", liked, "totalLikes", totalLikes));
         }
 
         return out;

@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: redis
   namespace: smartloading
 spec:
-  replicas: 1
+  serviceName: "redis"
+  replicas: 1  # Redis statefulset with 1 replica
   selector:
     matchLabels:
       app: redis
@@ -28,6 +29,14 @@ spec:
           args:
             - |
               redis-server --requirepass "$REDIS_PASSWORD"
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
@@ -35,9 +44,8 @@ metadata:
   name: redis
   namespace: smartloading
 spec:
-  type: ClusterIP
-  selector:
-    app: redis
   ports:
     - port: 6379
       targetPort: 6379
+  selector:
+    app: redis
