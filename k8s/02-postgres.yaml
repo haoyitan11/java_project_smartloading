@@ -5,7 +5,7 @@ metadata:
   namespace: smartloading
 spec:
   serviceName: "postgres"
-  replicas: 1  # You can adjust the replicas as needed
+  replicas: 1
   selector:
     matchLabels:
       app: postgres

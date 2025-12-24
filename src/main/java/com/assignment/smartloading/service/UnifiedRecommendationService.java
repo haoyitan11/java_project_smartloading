@@ -69,7 +69,7 @@ public class UnifiedRecommendationService {
                 categoryCount, top3Categories, steps
         );
 
-        // ✅ redis in k8s; no-op in local
+        // redis in k8s; without redis in local
         decisionTreeCache.saveDecision(userId, finalDtos, categoryCount, top3Categories, result);
 
         return result;

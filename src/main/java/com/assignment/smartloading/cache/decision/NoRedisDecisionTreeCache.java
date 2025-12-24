@@ -14,11 +14,11 @@ public class NoRedisDecisionTreeCache implements DecisionTreeCache {
     @Override
     public void saveDecision(String userId, List<ProductDTO> finalProducts, Map<String, Long> categoryCount,
                              List<String> top3Categories, DecisionTreeResult debug) {
-        // no-op
+        //no interaction
     }
 
     @Override
     public void evictDecision(String userId) {
-        // no-op
+        //no interaction
     }
 }

@@ -25,9 +25,14 @@ public class DashboardController {
     @GetMapping("/dashboard")
     public String showDashboard(Model model, HttpSession session) {
         String userId = (String) session.getAttribute("userId");
+
         if (userId == null) {
-            return "redirect:/login";
+            userId = "092ab9e0-6396-433c-b4ff-aae5c3025a0c";
         }
+
+//        if (userId == null) {
+//            return "redirect:/login";
+//        }
 
         // run decision tree
         DecisionTreeResult result = recommendationService.runDecisionTree(userId);

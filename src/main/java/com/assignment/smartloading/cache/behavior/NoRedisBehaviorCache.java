@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 public class NoRedisBehaviorCache implements BehaviorCache {
     @Override
     public void recordClick(String userId, String category) {
-        // no-op
+        //no interaction
     }
 }

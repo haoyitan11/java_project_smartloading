@@ -21,7 +21,7 @@ public class LikeService {
 
     private final ProductLikeRepository repo;
     private final JsonLoggerService logger;
-    private final LikeCache cache; // ✅ interface (NoRedisLikeCache or RedisLikeCache)
+    private final LikeCache cache;
     private final UnifiedRecommendationService recommendationService;
 
     public LikeService(ProductLikeRepository repo,
@@ -57,7 +57,7 @@ public class LikeService {
 
         Runnable afterCommitWork = () -> {
             try {
-                // ✅ works: Redis impl does real work, local impl no-op
+                // if run with kubernetes, does real work, if local then no interaction
                 cache.evictUserLikes(userId);
 
                 long dbCount = repo.countByProductId(productId);

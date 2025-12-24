@@ -18,7 +18,7 @@ public class BehaviorService {
 
     private final UserBehaviorRepository repo;
     private final JsonLoggerService logger;
-    private final BehaviorCache cache; // Redis or No-op depending on profile
+    private final BehaviorCache cache;
     private final UnifiedRecommendationService recommendationService;
 
     public BehaviorService(UserBehaviorRepository repo,
@@ -31,14 +31,11 @@ public class BehaviorService {
         this.recommendationService = recommendationService;
     }
 
-    /**
-     * Source-of-truth = PostgreSQL.
-     * Redis is only a cache layer updated AFTER DB COMMIT.
-     */
+    //postgreSQL = source of truth. redis only updated after db commit.
     @Transactional
     public void addClick(String userId, String productId, String category) {
 
-        // 1) DB write (transactional)
+        //database write (transactional)
         UserBehavior existing = repo.findByUserIdAndCategory(userId, category);
         if (existing == null) {
             repo.save(new UserBehavior(userId, category, 1));
@@ -47,23 +44,23 @@ public class BehaviorService {
             repo.save(existing);
         }
 
-        // 2) Post-commit work (only after DB confirmed)
+        //post-commit work, only after database confirmed
         Runnable afterCommit = () -> {
-            // (a) Log (should not break main flow)
+            // log
             try {
                 logger.logClick(userId, productId, category);
             } catch (Exception e) {
                 log.warn("Failed to write click log userId={}, productId={}", userId, productId, e);
             }
 
-            // (b) Cache update (Redis in k8s, no-op in local)
+            // cache update (Redis in k8s, no redis in local)
             try {
                 cache.recordClick(userId, category);
             } catch (Exception e) {
                 log.warn("Cache click sync failed userId={}, category={}", userId, category, e);
             }
 
-            // (c) Evict decision tree so next dashboard uses fresh behavior
+            //evict decision tree so next dashboard uses fresh behavior
             try {
                 recommendationService.evictDecisionTreeForUser(userId);
             } catch (Exception e) {
@@ -71,7 +68,7 @@ public class BehaviorService {
             }
         };
 
-        // 3) Ensure it only runs after commit
+        // ensure it only runs after commit
         if (TransactionSynchronizationManager.isSynchronizationActive()) {
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override
@@ -80,7 +77,7 @@ public class BehaviorService {
                 }
             });
         } else {
-            // fallback: if transaction sync is not active, run immediately
+            //if transaction sync is not active, fallback
             afterCommit.run();
         }
     }

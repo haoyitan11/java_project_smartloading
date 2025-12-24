@@ -5,7 +5,7 @@ metadata:
   namespace: smartloading
 spec:
   serviceName: "redis"
-  replicas: 1  # Redis statefulset with 1 replica
+  replicas: 1
   selector:
     matchLabels:
       app: redis

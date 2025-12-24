@@ -28,7 +28,7 @@ public class DecisionTreeController {
 
         DecisionTreeResult result = recommendationService.runDecisionTree(userId);
 
-        //Use DTO lists (maybe empty if redis only stores finalProducts)
+        //use DTO lists (maybe empty if redis only store finalProducts)
         List<ProductDTO> initial = Optional.ofNullable(result.getInitialProducts()).orElse(Collections.emptyList());
         List<ProductDTO> s1 = Optional.ofNullable(result.getStage1Liked()).orElse(Collections.emptyList());
         List<ProductDTO> s2 = Optional.ofNullable(result.getStage2Clicks()).orElse(Collections.emptyList());

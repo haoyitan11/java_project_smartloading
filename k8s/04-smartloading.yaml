@@ -4,7 +4,7 @@ metadata:
   name: smartloading
   namespace: smartloading
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: smartloading
@@ -20,13 +20,13 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            # Use Spring profile for k8s or local
+            #k8s as profile while running kubernetes
             - name: SPRING_PROFILES_ACTIVE
-              value: "k8s"  # Use k8s profile if running in Kubernetes
+              value: "k8s"
 
-            # PostgreSQL connection settings
+            # PostgreSQL setting
             - name: SPRING_DATASOURCE_URL
-              value: "jdbc:postgresql://postgres.smartloading.svc.cluster.local:5432/mydb"  # Connect to PostgreSQL StatefulSet service
+              value: "jdbc:postgresql://postgres.smartloading.svc.cluster.local:5432/mydb"  #connect stateful service
             - name: SPRING_DATASOURCE_USERNAME
               value: "postgres"
             - name: SPRING_DATASOURCE_PASSWORD
@@ -35,9 +35,9 @@ spec:
                   name: smartloading-secrets
                   key: POSTGRES_PASSWORD
 
-            # Redis connection settings for k8s
+            #redis connection
             - name: SPRING_DATA_REDIS_HOST
-              value: "redis"  # Redis StatefulSet service
+              value: "redis"  #statefulset service
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
             - name: SPRING_DATA_REDIS_PASSWORD
